@@ -2,8 +2,6 @@ from django.test import TestCase
 from django.contrib.auth import authenticate
 from .models import CustomUser, UserGroup, Solution, Profile
 from django.db.utils import IntegrityError
-from unittest.mock import patch
-
 
 class UserTests(TestCase):
     # Things to be teseted

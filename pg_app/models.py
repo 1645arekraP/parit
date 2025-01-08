@@ -7,7 +7,6 @@ from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
-
 class CustomUserManager(BaseUserManager):
     """
     """
