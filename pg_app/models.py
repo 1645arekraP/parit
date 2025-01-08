@@ -127,6 +127,8 @@ class Profile(models.Model):
         null=False,
         blank=False,
     )
+    def __str__(self):
+        return self.user
 
     # TODO: Keep track of stats to be used for ML / AI purposes
 
