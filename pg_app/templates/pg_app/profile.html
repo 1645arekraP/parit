@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PolyGrind</title>
+  </head>
+  <body>
+    <body>
+        {% csrf_token %}
+        <h3>Hello, {{ user.username }}!</h3>
+        <h3>Your groups:</h3>
+        <ul>
+            {% for group in user.user_groups.all %}
+                <li>{{ group.group_name }}</li>
+            {% endfor %}
+        </ul>
+  </body>
+</html>

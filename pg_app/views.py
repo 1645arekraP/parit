@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm
 from django.contrib.auth import authenticate, login as dlogin
+from django.contrib.auth.decorators import login_required
+from .models import UserGroup, CustomUser
 
 def index(request):
     return HttpResponse("Hello, world!")
@@ -38,3 +40,8 @@ def login(request):
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})
+
+@login_required()
+def profile(request):
+    user = request.user
+    return render(request, "profile.html", {"user": user})

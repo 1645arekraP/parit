@@ -53,7 +53,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         null=False,
         validators=[username_validator]
     )
-    user_groups = models.ManyToManyField("UserGroup")
 
     # Overridden attributes
     is_staff = models.BooleanField(default=False)
@@ -82,7 +81,7 @@ class UserGroup(models.Model):
         length=8,
     )
     group_name = models.CharField(max_length=254, blank=False, null=False, default="Unnamed Group")
-    members = models.ManyToManyField("CustomUser")
+    members = models.ManyToManyField("CustomUser", related_name="user_groups")
     question_pool_type = models.CharField(
         max_length=36,
         null=False,
@@ -110,6 +109,9 @@ class UserGroup(models.Model):
             except IntegrityError:
                 self.invite_code = shortuuid.ShortUUID().random(length=8)
                 continue
+    
+    def __str__(self):
+        return self.invite_code
 
 
 
