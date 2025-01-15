@@ -1,3 +1,4 @@
+import random
 import shortuuid
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -72,50 +73,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
-class UserGroup(models.Model):
-    """
-    Model representing a group.
-    """
-    invite_code = ShortUUIDField(
-        unique=True,
-        length=8,
-    )
-    group_name = models.CharField(max_length=254, blank=False, null=False, default="Unnamed Group")
-    members = models.ManyToManyField("CustomUser", related_name="user_groups")
-    question_pool_type = models.CharField(
-        max_length=36,
-        null=False,
-        blank=False,
-        default="DAILY",
-        choices=[
-        ("DAILY", "Daily Question"),
-        ("BLIND75", "Blind 75"),
-        ("NEETCODE150", "Neetcode 150"),
-        ("NEETCODE250", "Neetcode 250"),
-        ("ALL", "All"),
-        ("CUSTOM", "Custom Pool"),
-        ]
-    )
-
-    def save(self, *args, **kwargs):
-        if not self.invite_code:
-            self.invite_code = shortuuid.ShortUUID().random(length=8)
-
-        while True:
-            try:
-                with transaction.atomic():
-                    super().save(*args, **kwargs)
-                    break
-            except IntegrityError:
-                self.invite_code = shortuuid.ShortUUID().random(length=8)
-                continue
-    
-    def __str__(self):
-        return self.invite_code
-
-
-
-
 class Profile(models.Model):
     """
     Model representing a profile. This keeps track of the user's stats across multiple sources. 
@@ -161,3 +118,95 @@ class Solution(models.Model):
     class Meta:
         unique_together = ("profile", "question_slug")
         ordering = ["-date"]
+
+class Question(models.Model):
+    topic_tags = models.JSONField(null=True, blank=True)
+    ac_rate = models.FloatField()
+    content = models.CharField(null=True, blank=True)
+    difficulty = models.CharField()
+    is_paid = models.BooleanField()
+    link = models.URLField()
+    title = models.CharField()
+    title_slug = models.SlugField(unique=True, null=False, blank=False, max_length=255)
+    pool_tag = models.JSONField(default=list)
+
+    @classmethod
+    def get_new_question(cls, category):
+        """
+        This function updates the question daily. 
+        #TODO: Not saving correctly
+        """
+        print(category)
+        question = None
+        try:
+            questions = cls.objects.filter(pool_tag__contains=category)
+            question = random.choice(list(questions))
+            print(question)
+        except Exception as e :
+            print(f"Exception: {e}")
+        print(question)
+        return question
+
+    def __str__(self):
+        return self.title_slug
+
+class UserGroup(models.Model):
+    """
+    Model representing a group.
+    """
+    invite_code = ShortUUIDField(
+        unique=True,
+        length=8,
+        editable=False
+    )
+    group_name = models.CharField(max_length=254, blank=False, null=False, default="Unnamed Group")
+    members = models.ManyToManyField("CustomUser", related_name="user_groups")
+    question = models.ForeignKey(Question, related_name="groups", on_delete=models.CASCADE, null=True, default=get_new_question())
+    question_pool_type = models.CharField(
+        max_length=36,
+        null=False,
+        blank=False,
+        default="DAILY",
+        choices=[
+        ("DAILY", "Daily Question"),
+        ("BLIND_75", "Blind 75"),
+        ("NEETCODE_150", "Neetcode 150"),
+        ("NEETCODE_250", "Neetcode 250"),
+        ("LC_ALL", "Leetcode All"),
+        ("CUSTOM", "Custom Pool"),
+        ]
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.invite_code:
+            self.invite_code = shortuuid.ShortUUID().random(length=8)
+        
+        self.question = Question.get_new_question(self.question_pool_type)
+
+        while True:
+            try:
+                with transaction.atomic():
+                    super().save(*args, **kwargs)
+                    break
+            except IntegrityError:
+                self.invite_code = shortuuid.ShortUUID().random(length=8)
+                continue
+    
+    def update_daily_question(self):
+        self.question = self.question.get_new_question(self.question_pool_type)
+        self.save()
+
+    @staticmethod
+    def userBelongsToGroup(user, group_id):
+        """
+        Method to validate if a user is in the group they are trying to join. 
+        Returns the group object if they are in the group and returns None if they are not.
+        """
+        try:
+            group = user.user_groups.get(invite_code=group_id)
+            return group
+        except UserGroup.DoesNotExist:
+            return None
+    
+    def __str__(self):
+        return self.invite_code

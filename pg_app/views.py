@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, GroupSettingsForm
 from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
-from .models import UserGroup, CustomUser
+from .models import UserGroup
+from .utils.utils import QuestionUtils
 
 def index(request):
     return HttpResponse("Hello, world!")
@@ -31,7 +32,7 @@ def login(request):
             user = authenticate(email=email, password=password)
             if user is not None:
                 dlogin(request, user)
-                print("User logged in")
+                return redirect("/accounts/profile/") #TODO: Bugged and will not work
             else:
                 print(user)
                 print("Wrong email or password")
@@ -45,3 +46,28 @@ def login(request):
 def profile(request):
     user = request.user
     return render(request, "profile.html", {"user": user})
+
+@login_required()
+def group(request, invite_code):
+    user = request.user
+    group = UserGroup.userBelongsToGroup(user, invite_code)
+    q_utils = QuestionUtils()
+    if group:
+        return render(request, "group.html", {"user": user, "group": group})
+    return HttpResponse("Either this group does not exist or you are not in it!")
+
+@login_required()
+def groupSettings(request, invite_code):
+    user = request.user
+    group = get_object_or_404(UserGroup, invite_code=invite_code)
+    if request.method == "POST":
+        form = GroupSettingsForm(request.POST, instance=group)
+        if form.is_valid():
+            form.save()
+            return redirect(request.referer)
+        else:
+            pass
+    else:
+        form = GroupSettingsForm(instance=group)
+    return render(request, "group_settings.html", {"user": user, "group": group, "form": form})
+

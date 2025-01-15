@@ -43,7 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'pg_app',
+]
+
+CRONJOBS = [
+    ('* * * * *', 'pg_app.tasks.update_daily_question')
 ]
 
 MIDDLEWARE = [
@@ -86,8 +91,14 @@ DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("POSTGRES_URL"), 
         conn_max_age=600
-    )
+    ),
+    "testing": dj_database_url.config(
+        default=os.environ.get("POSTGRES_TEST_URL"), 
+        conn_max_age=600
+    ),
 }
+
+DATABASES["default"] = DATABASES["testing"]
 
 AUTH_USER_MODEL = 'pg_app.CustomUser'
 

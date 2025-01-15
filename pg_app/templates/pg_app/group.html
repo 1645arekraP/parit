@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>PolyGrind</title>
+  </head>
+  <body>
+    <body>
+        <h3>{{ group.group_name }}</h3>
+        <a href="/groups/settings/{{ question.invite_code }}">settings</a>
+        <a href="{{ question.link }}" target="_blank">{{ question.title }}</a>
+        {{ group.question.content|safe }}
+  </body>
+</html>

@@ -10,7 +10,8 @@
         <h3>Your groups:</h3>
         <ul>
             {% for group in user.user_groups.all %}
-                <li>{{ group.group_name }}</li>
+                <a href="{% url 'group' invite_code=group.invite_code %}"> {{ group.group_name }}</a>
+                <br>
             {% endfor %}
         </ul>
   </body>
