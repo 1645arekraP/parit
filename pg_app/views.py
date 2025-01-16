@@ -7,7 +7,7 @@ from .models import UserGroup
 from .utils.utils import QuestionUtils
 
 def index(request):
-    return HttpResponse("Hello, world!")
+    return render(request, "index.html")
 
 def register(request):
     if request.method == "POST":

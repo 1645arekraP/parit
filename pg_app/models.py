@@ -161,7 +161,7 @@ class UserGroup(models.Model):
     )
     group_name = models.CharField(max_length=254, blank=False, null=False, default="Unnamed Group")
     members = models.ManyToManyField("CustomUser", related_name="user_groups")
-    question = models.ForeignKey(Question, related_name="groups", on_delete=models.CASCADE, null=True, default=get_new_question())
+    question = models.ForeignKey(Question, related_name="groups", on_delete=models.CASCADE, null=True, blank=True, default=None)
     question_pool_type = models.CharField(
         max_length=36,
         null=False,
@@ -181,6 +181,7 @@ class UserGroup(models.Model):
         if not self.invite_code:
             self.invite_code = shortuuid.ShortUUID().random(length=8)
         
+        # Hacked together solution.
         self.question = Question.get_new_question(self.question_pool_type)
 
         while True:

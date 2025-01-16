@@ -1,13 +1,17 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
   <head>
     <title>PolyGrind</title>
+    <link href="{% static 'src/styles.css' %}" rel="stylesheet">
   </head>
   <body>
     <body>
-        <h3>{{ group.group_name }}</h3>
-        <a href="/groups/settings/{{ question.invite_code }}">settings</a>
-        <a href="{{ question.link }}" target="_blank">{{ question.title }}</a>
-        {{ group.question.content|safe }}
+        <div class="prose">
+            {{ group.group_name }}
+            <a href="/groups/settings/{{ question.invite_code }}">settings</a>
+            <a href="{{ group.question.link }}" target="_blank">{{ group.question.title }}</a>
+            {{ group.question.content|safe }}
+        </div>
   </body>
 </html>
