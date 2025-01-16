@@ -98,6 +98,7 @@ DATABASES = {
     ),
 }
 
+# REMOVE THIS FOR PRODUCTION 
 DATABASES["default"] = DATABASES["testing"]
 
 AUTH_USER_MODEL = 'pg_app.CustomUser'
