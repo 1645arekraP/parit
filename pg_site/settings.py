@@ -92,6 +92,7 @@ DATABASES = {
         default=os.environ.get("POSTGRES_URL"), 
         conn_max_age=600
     ),
+
     "testing": dj_database_url.config(
         default=os.environ.get("POSTGRES_TEST_URL"), 
         conn_max_age=600

@@ -28,8 +28,14 @@ class RegistrationForm(forms.ModelForm):
         return user
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label="Email")
-    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    email = forms.EmailField(label="email", widget=forms.EmailInput(attrs={
+            'class': 'grow',
+            'placeholder': 'Enter your email',
+        }))
+    password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
+            'class': 'grow',
+            'placeholder': 'Enter your password',
+        }))
 
 class GroupSettingsForm(forms.ModelForm):
     invite_code = forms.CharField(

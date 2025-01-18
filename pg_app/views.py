@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
 from .models import UserGroup
 from .utils.utils import QuestionUtils
+from django.contrib import messages
 
 def index(request):
     return render(request, "index.html")
@@ -36,6 +37,7 @@ def login(request):
             else:
                 print(user)
                 print("Wrong email or password")
+                messages.error(request, "Invalid email or password.")
         else:
             pass
     else:
