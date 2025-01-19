@@ -4,12 +4,28 @@ from django.core.exceptions import ValidationError
 
 
 class RegistrationForm(forms.ModelForm):
-    password1 = forms.CharField(label="Password", widget=forms.PasswordInput)
-    password2 = forms.CharField(label="Password Confirmation", widget=forms.PasswordInput)
+    password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
+            'class': 'grow',
+            'placeholder': 'Enter your password',
+        }))
+    password2 = forms.CharField(label="Password Confirmation", widget=forms.PasswordInput(attrs={
+            'class': 'grow',
+            'placeholder': 'Enter your password',
+        }))
 
     class Meta:
         model = CustomUser
         fields = ["email", "username"]
+        widgets = {
+            "email": forms.EmailInput(attrs={
+                'class': 'grow',
+                'placeholder': 'Enter your email',
+            }),
+            "username": forms.TextInput(attrs={
+                'class': 'grow',
+                'placeholder': 'Enter your username',
+            }),
+        }
 
     def clean_password2(self):
         # Check that the two password entries match
