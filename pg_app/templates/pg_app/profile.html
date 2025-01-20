@@ -17,7 +17,7 @@
                         <h1 class="text-3xl font-bold">{{user.username}}</h1>
                         <p class="text-lg text-gray-200 mt-2">{{user.email}}</p>
                         <div class="mt-4">
-                            <span class="badge badge-secondary">Member Since: TO BE ADDED</span>
+                            <span class="badge badge-secondary">Member Since: {{user.date_joined}}</span>
                         </div>
                     </div>
                     <div class="flex flex-col gap-2">
@@ -78,7 +78,7 @@
                         <!-- Streak Count -->
                         <div class="flex items-center gap-4 mb-4">
                             <div class="text-4xl font-extrabold text-indigo-600">🔥</div>
-                            <div class="text-3xl font-bold text-gray-800">10 Days</div>
+                            <div class="text-3xl font-bold text-gray-800">{{user.profile.streak}} Days</div>
                         </div>
                 
                 
@@ -92,15 +92,15 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="stat">
                             <h3 class="stat-title text-gray-600">Struggled Questions</h3>
-                            <p class="stat-value text-red-600">25</p>
+                            <p class="stat-value text-red-600">{{numberOfStruggledQuestions}}</p>
                         </div>
                         <div class="stat">
                             <h3 class="stat-title text-gray-600">Excelled Questions</h3>
-                            <p class="stat-value text-green-600">120</p>
+                            <p class="stat-value text-green-600">{{numberOfexcelledQuestions}}</p>
                         </div>
                         <div class="stat">
                             <h3 class="stat-title text-gray-600">Overall Acceptance Rate</h3>
-                            <div class="radial-progress text-primary" style="--value:10;" role="progressbar">10%</div>
+                            <div class="radial-progress text-primary" style=("--value: {{ user.profile.acceptance_rate }};")  role="progressbar">{{user.profile.acceptance_rate}}%</div>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,6 @@
                         <span class="badge badge-success">Dynamic Programming</span>
                         <span class="badge badge-success">Graphs</span>
                         <span class="badge badge-success">Recursion</span>
-                        <!-- Add more tags as needed -->
                     </div>
                 </div>
             </div>
@@ -126,7 +125,6 @@
                         <span class="badge badge-error">Dynamic Programming</span>
                         <span class="badge badge-error">Graphs</span>
                         <span class="badge badge-error">Recursion</span>
-                        <!-- Add more tags as needed -->
                     </div>
                 </div>
             </div>
@@ -147,7 +145,6 @@
                         <div class="badge badge-primary p-4 text-white text-center">
                             <p>Top Contributor</p>
                         </div>
-                        <!-- Add more achievements as needed -->
                     </div>
                 </div>
             </div>

@@ -75,6 +75,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+class QuestionRelation(models.Model):
+    profile = models.ForeignKey("Profile", on_delete=models.CASCADE)
+    question = models.ForeignKey("Question", on_delete=models.CASCADE)
+    relation_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("solved", "Solved"),
+            ("excelled", "Excelled"),
+            ("struggled", "Struggled"),
+            ("unsolved", "Unsolved"),
+            ("strugglingToSolve", "StrugglingToSolve"),
+        ],
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("profile", "question", "relation_type")
+
 class Profile(models.Model):
     """
     Model representing a profile. This keeps track of the user's stats across multiple sources. 
@@ -91,7 +109,13 @@ class Profile(models.Model):
 
     acceptance_rate = models.FloatField(default=0.0)
 
-    streak = models.IntegerField(default=0.0)
+    streak = models.IntegerField(default=0)
+
+    friends = models.ManyToManyField("self", blank=True, symmetrical=True)
+
+    questions = models.ManyToManyField("Question", through="QuestionRelation")
+
+
 
     @classmethod
     def update_streak(self):
@@ -121,7 +145,7 @@ class Profile(models.Model):
 
 
     def __str__(self):
-        return self.user
+        return self.user.email
 
     # TODO: Keep track of stats to be used for ML / AI purposes
 

@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm, GroupSettingsForm
 from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
-from .models import UserGroup
+from .models import UserGroup, Question, QuestionRelation, Profile
 from .utils.utils import QuestionUtils
 from django.contrib import messages
 
@@ -47,7 +47,10 @@ def login(request):
 @login_required()
 def profile(request):
     user = request.user
-    return render(request, "profile.html", {"user": user})
+    numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled")
+    numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled")
+
+    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
 
 @login_required()
 def group(request, invite_code):
