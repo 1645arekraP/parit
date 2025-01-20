@@ -7,6 +7,8 @@ from shortuuid.django_fields import ShortUUIDField
 from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
     """
@@ -86,6 +88,38 @@ class Profile(models.Model):
         null=False,
         blank=False,
     )
+
+    acceptance_rate = models.FloatField(default=0.0)
+
+    streak = models.IntegerField(default=0.0)
+
+    @classmethod
+    def update_streak(self):
+        currentDate = timezone.now()
+        yesterday = currentDate - timedelta(days = 1)
+
+        recent_solution = self.solutions.filter(
+            date=yesterday,
+            accepted=True  # Only count accepted solutions
+        ).exists()
+
+        if not recent_solution:
+            self.streak = 0
+        
+        self.save()
+        return
+
+
+    @classmethod
+    def calculate_acceptance_rate(self):
+        numberOfSolutions = self.solutions.count()
+        if numberOfSolutions == 0:
+            return 0
+        
+        numAcceptedSolution = self.solutions.filter(accepted=True).count()
+        return (numAcceptedSolution/numberOfSolutions) * 100
+
+
     def __str__(self):
         return self.user
 
@@ -98,6 +132,7 @@ class Solution(models.Model):
     profile = models.ForeignKey(
         "Profile",
         on_delete=models.CASCADE,
+        related_name='solutions',
         null=False,
         blank=False,
     )

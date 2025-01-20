@@ -1,4 +1,4 @@
-from .models import UserGroup, Question
+from .models import UserGroup, Question, Profile
 
 def update_daily_question():
     print("Job went off!")
@@ -7,3 +7,8 @@ def update_daily_question():
 
 def update_questions():
     pass
+
+def update_daily_streak():
+    print("Updating Streak")
+    for profile in Profile.objects.all():
+        profile.update_streak()

@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'pg_app.tasks.update_daily_question')
+    ('* * * * *', 'pg_app.tasks.update_daily_question'),
+    ('0 0 * * *', 'pg_app.tasks.update_daily_streak')
 ]
 
 MIDDLEWARE = [
