@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'pg_app.tasks.update_daily_question')
+    ('* * * * *', 'pg_app.tasks.update_daily_question'),
+    ('0 0 * * *', 'pg_app.tasks.update_daily_streak')
 ]
 
 MIDDLEWARE = [
@@ -92,6 +93,7 @@ DATABASES = {
         default=os.environ.get("POSTGRES_URL"), 
         conn_max_age=600
     ),
+
     "testing": dj_database_url.config(
         default=os.environ.get("POSTGRES_TEST_URL"), 
         conn_max_age=600

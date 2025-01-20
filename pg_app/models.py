@@ -7,6 +7,8 @@ from shortuuid.django_fields import ShortUUIDField
 from django.db import IntegrityError, transaction
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
+from datetime import timedelta
 
 class CustomUserManager(BaseUserManager):
     """
@@ -73,6 +75,24 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         return self.email
 
 
+class QuestionRelation(models.Model):
+    profile = models.ForeignKey("Profile", on_delete=models.CASCADE)
+    question = models.ForeignKey("Question", on_delete=models.CASCADE)
+    relation_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("solved", "Solved"),
+            ("excelled", "Excelled"),
+            ("struggled", "Struggled"),
+            ("unsolved", "Unsolved"),
+            ("strugglingToSolve", "StrugglingToSolve"),
+        ],
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("profile", "question", "relation_type")
+
 class Profile(models.Model):
     """
     Model representing a profile. This keeps track of the user's stats across multiple sources. 
@@ -86,8 +106,46 @@ class Profile(models.Model):
         null=False,
         blank=False,
     )
+
+    acceptance_rate = models.FloatField(default=0.0)
+
+    streak = models.IntegerField(default=0)
+
+    friends = models.ManyToManyField("self", blank=True, symmetrical=True)
+
+    questions = models.ManyToManyField("Question", through="QuestionRelation")
+
+
+
+    @classmethod
+    def update_streak(self):
+        currentDate = timezone.now()
+        yesterday = currentDate - timedelta(days = 1)
+
+        recent_solution = self.solutions.filter(
+            date=yesterday,
+            accepted=True  # Only count accepted solutions
+        ).exists()
+
+        if not recent_solution:
+            self.streak = 0
+        
+        self.save()
+        return
+
+
+    @classmethod
+    def calculate_acceptance_rate(self):
+        numberOfSolutions = self.solutions.count()
+        if numberOfSolutions == 0:
+            return 0
+        
+        numAcceptedSolution = self.solutions.filter(accepted=True).count()
+        return (numAcceptedSolution/numberOfSolutions) * 100
+
+
     def __str__(self):
-        return self.user
+        return self.user.email
 
     # TODO: Keep track of stats to be used for ML / AI purposes
 
@@ -98,6 +156,7 @@ class Solution(models.Model):
     profile = models.ForeignKey(
         "Profile",
         on_delete=models.CASCADE,
+        related_name='solutions',
         null=False,
         blank=False,
     )
