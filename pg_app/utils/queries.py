@@ -9,6 +9,17 @@ query recentAcSubmissions($username: String!, $limit: Int!) {
 }
 """
 
+RECENT_SUBMISSIONS = """
+query getRecentSubmissions($username: String!, $limit: Int) {
+    recentSubmissionList(username: $username, limit: $limit) {
+        title
+        titleSlug
+        timestamp
+        statusDisplay
+        lang
+    }
+}"""
+
 DAILY_QUESTION = """
 query questionOfToday {
   activeDailyCodingChallengeQuestion {

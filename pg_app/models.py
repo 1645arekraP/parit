@@ -124,7 +124,7 @@ class Question(models.Model):
     ac_rate = models.FloatField()
     content = models.CharField(null=True, blank=True)
     difficulty = models.CharField()
-    is_paid = models.BooleanField()
+    is_paid = models.BooleanField(default=False)
     link = models.URLField()
     title = models.CharField()
     title_slug = models.SlugField(unique=True, null=False, blank=False, max_length=255)
@@ -136,15 +136,12 @@ class Question(models.Model):
         This function updates the question daily. 
         #TODO: Not saving correctly
         """
-        print(category)
         question = None
         try:
             questions = cls.objects.filter(pool_tag__contains=category)
             question = random.choice(list(questions))
-            print(question)
         except Exception as e :
             print(f"Exception: {e}")
-        print(question)
         return question
 
     def __str__(self):

@@ -1,7 +1,8 @@
 from .models import UserGroup, Question
 
+# TODO: Swap to Celery
+
 def update_daily_question():
-    print("Job went off!")
     for group in UserGroup.objects.all():
         group.update_daily_question()
 

@@ -10,6 +10,9 @@ class LeetcodeAc():
         self.__id = id
         self.__title = title
         self.__timestamp = datetime.datetime.fromtimestamp(int(timestamp), tz=datetime.timezone.utc)
+
+    def get_title(self):
+        return self.__title
     
     def __str__(self):
         return f"Solved {self.__title} at {self.__timestamp}"

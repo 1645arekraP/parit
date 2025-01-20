@@ -4,7 +4,8 @@ from .forms import RegistrationForm, LoginForm, GroupSettingsForm
 from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
 from .models import UserGroup
-from .utils.utils import QuestionUtils
+from .utils.LeetcodeWrapper import LeetcodeWrapper
+from django.http import JsonResponse
 
 def index(request):
     return render(request, "index.html")
@@ -51,23 +52,33 @@ def profile(request):
 def group(request, invite_code):
     user = request.user
     group = UserGroup.userBelongsToGroup(user, invite_code)
-    q_utils = QuestionUtils()
     if group:
-        return render(request, "group.html", {"user": user, "group": group})
+        print("group valid!")
+        if request.method == "POST":
+            print("Method was post!")
+            form = GroupSettingsForm(request.POST, instance=group)
+            if form.is_valid():
+                form.save()
+                print("Saved!")
+                return render(request, "group.html", {"user": user, "group": group, "form": form}) 
+            else:
+                print("Error!")
+                pass
+        else:
+            form = GroupSettingsForm(instance=group)
+        return render(request, "group.html", {"user": user, "group": group, "form": form})
     return HttpResponse("Either this group does not exist or you are not in it!")
 
 @login_required()
-def groupSettings(request, invite_code):
-    user = request.user
-    group = get_object_or_404(UserGroup, invite_code=invite_code)
-    if request.method == "POST":
-        form = GroupSettingsForm(request.POST, instance=group)
-        if form.is_valid():
-            form.save()
-            return redirect(request.referer)
-        else:
-            pass
-    else:
-        form = GroupSettingsForm(instance=group)
-    return render(request, "group_settings.html", {"user": user, "group": group, "form": form})
+def update_solution(request, username):
+    lc_wrapper = LeetcodeWrapper()
+    try:
+        solutions = lc_wrapper.get_accepted_solutions(username)
+        resp = {}
+        for i, sol in enumerate(solutions):
+            resp[i + 1] = sol.get_title()
 
+        return JsonResponse({"message": "Update successful", "Response": resp})
+    except Exception as e:
+        print(e)
+    return JsonResponse({"error": "Invalid request"}, status=400)
