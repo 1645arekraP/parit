@@ -1,0 +1,25 @@
+{
+  "name": "polygrind",
+  "version": "1.0.0",
+  "description": "",
+  "main": "postcss.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tailwindcss -i ./static/src/input.css -o ./static/src/styles.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1645arekraP/polygrind.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1645arekraP/polygrind/issues"
+  },
+  "homepage": "https://github.com/1645arekraP/polygrind#readme",
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "daisyui": "^4.12.23"
+  }
+}

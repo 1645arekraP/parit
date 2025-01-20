@@ -43,7 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_crontab',
     'pg_app',
+]
+
+CRONJOBS = [
+    ('* * * * *', 'pg_app.tasks.update_daily_question')
 ]
 
 MIDDLEWARE = [
@@ -86,8 +91,15 @@ DATABASES = {
     "default": dj_database_url.config(
         default=os.environ.get("POSTGRES_URL"), 
         conn_max_age=600
-    )
+    ),
+    "testing": dj_database_url.config(
+        default=os.environ.get("POSTGRES_TEST_URL"), 
+        conn_max_age=600
+    ),
 }
+
+# REMOVE THIS FOR PRODUCTION 
+DATABASES["default"] = DATABASES["testing"]
 
 AUTH_USER_MODEL = 'pg_app.CustomUser'
 
@@ -120,6 +132,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # This production code might break development mode, so we check whether we're in DEBUG mode
 if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)

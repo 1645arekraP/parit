@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="flex w-full justify-center py-5">
+  {{ group.group_name }}
+  <!-- You can open the modal using ID.showModal() method -->
+   <!-- TODO: Make font sizes consistent -->
+  <button class="" onclick="usergroup_settings_modal.showModal()">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 ml-4">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    </svg>    
+  </button>
+  <dialog id="usergroup_settings_modal" class="modal">
+    <div class="modal-box">
+      <!-- Modal Close Button -->
+      <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('usergroup_settings_modal').close()">✕</button>
+  
+      <h3 class="text-lg font-bold">Group Settings</h3>
+  
+      <!-- Single Form -->
+      <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <div class="modal-action">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('usergroup_settings_modal').close()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </dialog>  
+</div>
+
+
+
+<!-- Using flex to manage layout -->
+<div class="flex w-full h-[calc(100vh-10rem)]">
+  <!-- Left Column (50% of the width) -->
+  <div class="w-1/2 border-solid rounded-md border-2 overflow-auto p-5 ml-5">
+    <div class="prose break-words text-sm">
+      <a class="text-secondary" href="{{ group.question.link }}" target="_blank">{{ group.question.title }}</a>
+      {{ group.question.content|safe }}
+    </div>
+  </div>
+
+  <!-- Right Column (Stacked boxes) -->
+  <div class="w-1/2 flex flex-col">
+    <!-- First Box -->
+    <div class="border-solid rounded-md border-2 overflow-auto p-5 ml-2.5 mr-5">
+      <div class="flex justify-between">
+        <h3>Members</h3>
+        <button class="btn btn-outline btn-primary btn-xs flex">Invite</button>
+      </div>
+      <!-- Group Table -->
+      <div class="overflow-x-auto">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th></th>
+              <th>Username</th>
+              <th>Progress</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- rows -->
+            {% for user in group.members.all %}
+              <tr>
+                <th>{{forloop.counter}}</th>
+                <td>{{user.username}}</td>
+                <td>Has Not Started</td>
+                <th>
+                  <button class="btn btn-ghost btn-xs">details</button>
+                </th>    
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Second Box -->
+    <div class="border-solid rounded-md border-2 overflow-auto p-5 ml-2.5 mr-5 mt-5">
+      I Should be a code portion or notes portion
+    </div>
+  </div>
+</div>
+{% with scheme=request.scheme %}
+{% with host=request.get_host %}
+<script>
+  var base_url = "{{ scheme }}://{{ host }}";
+  var username = "{{ user.username }}";
+</script>
+{% endwith %}
+{% endwith %}
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+<script src="{% static 'js/tab-detection.js' %}"></script>
+{% endblock %}

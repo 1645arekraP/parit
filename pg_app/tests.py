@@ -86,6 +86,6 @@ class GroupTests(TestCase):
         self.assertNotEqual(group_1.invite_code, group_2.invite_code)
     
     def test_users_in_groups(self):
-        pass
+        print(UserGroup.objects.all())
 
 # TODO: Need more test cases
