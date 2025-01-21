@@ -2,19 +2,156 @@
 
 {% block content %}
 {% csrf_token %}
-  <div class="flex flex-col items-center">
-    <h3>Hello, {{ user.username }}!</h3>
-    <h3>Your groups:</h3>
-    <div class="border-solid rounded-md border-2">
-      <ul class="text-center">
-        {% for group in user.user_groups.all %}
-          <a href="{% url 'group' invite_code=group.invite_code %}" class="p-2"> {{ group.group_name }}</a>
-          {% if not forloop.last %}
-          <div class="divider m-0"></div>
-          {% endif %}
-        {% endfor %}
-      </ul>
+
+
+<div class="min-h-screen">
+    <!-- Header Section -->
+    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-8">
+        <div class="container mx-auto flex flex-col md:flex-row items-center gap-6 px-4 md:px-8">
+            <div class="flex-shrink-0">
+                <div class="avatar">
+                    <div class="w-24 h-24 rounded-full ring ring-white ring-offset-base-100 ring-offset-2">
+                        <img src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg" alt="User Avatar" />
+                    </div>
+                </div>
+            </div>
+            <div class="flex-grow">
+                <h1 class="text-3xl font-bold">{{user.username}}</h1>
+                <p class="text-lg text-gray-200 mt-2">{{user.email}}</p>
+                <div class="mt-4">
+                    <span class="badge badge-secondary">Member Since: {{user.date_joined}}</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <a href="#" class="btn btn-outline btn-sm">Edit Profile</a>
+                <a href="" class="btn btn-error btn-sm">Logout</a>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- Groups Details Section -->
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">Your Groups</h2>
+            <div class="overflow-x-auto">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Group Name</th>
+                            <th class="text-left">Members</th>
+                            <th class="text-left">Invite Code</th>
+                            <th class="text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if user.user_groups.all %}
+                            {% for group in user.user_groups.all %}
+                            <tr>
+                                <td class="text-gray-800">{{ group.group_name }}</td>
+                                <td class="text-gray-600">{{ group.members.count }}</td>
+                                <td class="text-gray-600">{{ group.invite_code }}</td>
+                                <td>
+                                    <a 
+                                        href="{% url 'group' invite_code=group.invite_code %}" 
+                                        class="btn btn-sm btn-outline btn-primary">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-gray-600">No Groups</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- Streak and Questions Section -->
+    <div class="container mx-auto mt-8 px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Tags User Struggles With -->
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">Current Streak</h2>
+            <div class="flex flex-col items-center">
+                <!-- Streak Count -->
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="text-4xl font-extrabold text-indigo-600">🔥</div>
+                    <div class="text-3xl font-bold text-gray-800">{{user.profile.streak}} Days</div>
+                </div>
         
+        
+            </div>
+        </div>
+        
+
+        <!-- Questions Stats -->
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">Questions Stats</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="stat">
+                    <h3 class="stat-title text-gray-600">Struggled Questions</h3>
+                    <p class="stat-value text-red-600">{{numberOfStruggledQuestions}}</p>
+                </div>
+                <div class="stat">
+                    <h3 class="stat-title text-gray-600">Excelled Questions</h3>
+                    <p class="stat-value text-green-600">{{numberOfExcelledQuestions}}</p>
+                </div>
+                <div class="stat">
+                    <h3 class="stat-title text-gray-600">Overall Acceptance Rate</h3>
+                    <div class="radial-progress text-primary" style=("--value: {{ user.profile.acceptance_rate }};")  role="progressbar">{{user.profile.acceptance_rate}}%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Excelling Tags Section -->
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Tags You're Excelling At:</h3>
+            <div class="flex flex-wrap gap-2">
+                <span class="badge badge-success">Dynamic Programming</span>
+                <span class="badge badge-success">Graphs</span>
+                <span class="badge badge-success">Recursion</span>
+            </div>
+        </div>
+    </div>
+    <!--Struggled Tags Section-->
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4">Tags You Struggle With</h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="badge badge-error">Dynamic Programming</span>
+                <span class="badge badge-error">Graphs</span>
+                <span class="badge badge-error">Recursion</span>
+            </div>
+        </div>
+    </div>
+    <!-- Achievements Section -->
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-700">Achievements</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                <div class="badge badge-success p-4 text-white text-center">
+                    <p>First Group</p>
+                </div>
+                <div class="badge badge-info p-4 text-white text-center">
+                    <p>10 Groups Joined</p>
+                </div>
+                <div class="badge badge-warning p-4 text-white text-center">
+                    <p>100 Sessions</p>
+                </div>
+                <div class="badge badge-primary p-4 text-white text-center">
+                    <p>Top Contributor</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+
 {% endblock %}

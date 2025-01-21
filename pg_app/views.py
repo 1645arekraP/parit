@@ -46,7 +46,10 @@ def login(request):
 @login_required()
 def profile(request):
     user = request.user
-    return render(request, "profile.html", {"user": user})
+    numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
+    numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
+    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
+
 
 @login_required()
 def group(request, invite_code):
