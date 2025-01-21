@@ -46,9 +46,8 @@ def login(request):
 @login_required()
 def profile(request):
     user = request.user
-    numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled")
-    numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled")
-
+    numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
+    numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
     return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
 
 

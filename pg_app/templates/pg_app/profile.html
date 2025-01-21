@@ -98,7 +98,7 @@
                 </div>
                 <div class="stat">
                     <h3 class="stat-title text-gray-600">Excelled Questions</h3>
-                    <p class="stat-value text-green-600">{{numberOfexcelledQuestions}}</p>
+                    <p class="stat-value text-green-600">{{numberOfExcelledQuestions}}</p>
                 </div>
                 <div class="stat">
                     <h3 class="stat-title text-gray-600">Overall Acceptance Rate</h3>
@@ -152,22 +152,6 @@
     </div>
 </div>
 
-<!-->
-  <div class="flex flex-col items-center">
-    <h3>Hello, {{ user.username }}!</h3>
-    <h3>Your groups:</h3>
-    <div class="border-solid rounded-md border-2">
-      <ul class="text-center">
-        {% for group in user.user_groups.all %}
-          <a href="{% url 'group' invite_code=group.invite_code %}" class="p-2"> {{ group.group_name }}</a>
-          {% if not forloop.last %}
-          <div class="divider m-0"></div>
-          {% endif %}
-        {% endfor %}
-      </ul>
-    </div>
-  </div>
--->
         
 
 {% endblock %}
