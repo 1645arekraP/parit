@@ -53,6 +53,7 @@ CRONJOBS = [
 ]
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,7 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'pg_site.urls'
@@ -82,26 +82,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pg_site.wsgi.application'
+ASGI_APPLICATION = 'pg_site.asgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.environ.get("POSTGRES_URL"), 
-        conn_max_age=600
-    ),
-
-    "testing": dj_database_url.config(
-        default=os.environ.get("POSTGRES_TEST_URL"), 
-        conn_max_age=600
-    ),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  
+    }
 }
-
-# REMOVE THIS FOR PRODUCTION 
-DATABASES["default"] = DATABASES["testing"]
 
 AUTH_USER_MODEL = 'pg_app.CustomUser'
 

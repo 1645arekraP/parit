@@ -89,3 +89,15 @@ class GroupTests(TestCase):
         print(UserGroup.objects.all())
 
 # TODO: Need more test cases
+def test_create_valid_solution(self):
+        solution = Solution.objects.create(
+            profile=self.profile,
+            question=self.question,
+            memory=0,
+            runtime=0,
+            tags=[],
+            accepted=False,
+            attempts=0,
+            attempt_timestamps=[],
+            code=""
+        )

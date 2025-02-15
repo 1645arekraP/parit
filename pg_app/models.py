@@ -107,6 +107,8 @@ class Profile(models.Model):
         blank=False,
     )
 
+    profile_is_active = models.BooleanField(default=True)
+    
     acceptance_rate = models.FloatField(default=0.0)
 
     streak = models.IntegerField(default=0)
@@ -157,35 +159,31 @@ class Solution(models.Model):
         "Profile",
         on_delete=models.CASCADE,
         related_name='solutions',
-        null=False,
-        blank=False,
     )
-    question_slug = models.CharField(
-        max_length=36,
-        null=False,
-        blank=False
-    )
+    question = models.ForeignKey("pg_app.Question", on_delete=models.CASCADE, default="two-sum")
+    question_slug = models.IntegerField(default=1)
     memory = models.FloatField()
     runtime = models.FloatField()
     tags = models.JSONField()
     accepted = models.BooleanField(default=False)
     date = models.DateTimeField(default=now)
     attempts = models.IntegerField(default=0)
+    attempt_timestamps = models.JSONField(default=list) #
     # Not sure what the char field for this should be or the max length
     code = models.TextField(blank=True)
 
     class Meta:
-        unique_together = ("profile", "question_slug")
+        unique_together = ("profile", "question")
         ordering = ["-date"]
 
 class Question(models.Model):
     topic_tags = models.JSONField(null=True, blank=True)
     ac_rate = models.FloatField()
-    content = models.CharField(null=True, blank=True)
-    difficulty = models.CharField()
+    content = models.CharField(null=True, blank=True, max_length=5012)
+    difficulty = models.CharField(max_length=1024)
     is_paid = models.BooleanField(default=False)
     link = models.URLField()
-    title = models.CharField()
+    title = models.CharField(max_length=1024)
     title_slug = models.SlugField(unique=True, null=False, blank=False, max_length=255)
     pool_tag = models.JSONField(default=list)
 
@@ -238,7 +236,8 @@ class UserGroup(models.Model):
             self.invite_code = shortuuid.ShortUUID().random(length=8)
         
         # Hacked together solution.
-        self.question = Question.get_new_question(self.question_pool_type)
+        #self.question = Question.get_new_question(self.question_pool_type)
+        self.question = Question.objects.all()[0]
 
         while True:
             try:

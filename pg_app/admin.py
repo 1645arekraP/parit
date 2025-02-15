@@ -17,12 +17,21 @@ class UserGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user','acceptance_rate','streak','friends','questions')
+    list_display = ('user', 'acceptance_rate', 'streak', 'friends_list', 'questions_list')
+    
+    def friends_list(self, obj):
+        return ", ".join([friend.email for friend in obj.friends.all()])
+    friends_list.short_description = 'Friends'
+
+    def questions_list(self, obj):
+        return obj.questions.count()
+    questions_list.short_description = 'Number of Questions'
+
     search_fields = ('user__email', 'user__username')
 
 @admin.register(Solution)
 class SolutionAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'question_slug', 'memory', 'runtime', 'accepted', 'date', 'attempts')
-    search_fields = ('question_slug', 'profile__user__email')
+    list_display = ('profile', 'question__title_slug', 'memory', 'runtime', 'accepted', 'date', 'attempts')
+    search_fields = ('question__title_slug', 'profile__user__email')
     list_filter = ('accepted', 'tags')
     ordering = ('-date',)

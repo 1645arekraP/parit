@@ -1,49 +1,48 @@
 RECENT_AC_SUBMISSIONS = """
 query recentAcSubmissions($username: String!, $limit: Int!) {
   recentAcSubmissionList(username: $username, limit: $limit) {
-    id
     title
     titleSlug
     timestamp
+    statusDisplay
+    lang
+    runtime
+    memory
+    time
   }
 }
 """
 
 RECENT_SUBMISSIONS = """
 query getRecentSubmissions($username: String!, $limit: Int) {
-    recentSubmissionList(username: $username, limit: $limit) {
-        title
-        titleSlug
-        timestamp
-        statusDisplay
-        lang
+  recentSubmissionList(username: $username, limit: $limit) {
+    title
+    titleSlug
+    timestamp
+    statusDisplay
+    lang
+    runtime
+    memory
+    time
     }
 }"""
 
 DAILY_QUESTION = """
 query questionOfToday {
   activeDailyCodingChallengeQuestion {
-    date
-    userStatus
-    link
     question {
       acRate
-      content
-      difficulty
-      freqBar
-      frontendQuestionId: questionFrontendId
-      isFavor
-      paidOnly: isPaidOnly
-      status
-      title
-      titleSlug
-      hasVideoSolution
-      hasSolution
-      topicTags {
-        name
-        id
-        slug
-      }
+        title
+        titleSlug
+        content
+        isPaidOnly
+        difficulty
+        exampleTestcases
+        topicTags {
+            name
+            slug
+        }
+        hints
     }
   }
 }
@@ -52,66 +51,18 @@ query questionOfToday {
 GET_SELECTED_PROBLEM = """
 query selectProblem($titleSlug: String!) {
     question(titleSlug: $titleSlug) {
-        questionId
-        questionFrontendId
-        boundTopicId
+        acRate
         title
         titleSlug
         content
-        translatedTitle
-        translatedContent
         isPaidOnly
         difficulty
-        likes
-        dislikes
-        isLiked
-        similarQuestions
         exampleTestcases
-        contributors {
-            username
-            profileUrl
-            avatarUrl
-        }
         topicTags {
             name
             slug
-            translatedName
         }
-        companyTagStats
-        codeSnippets {
-            lang
-            langSlug
-            code
-        }
-        stats
         hints
-        solution {
-            id
-            canSeeDetail
-            paidOnly
-            hasVideoSolution
-            paidOnlyVideo
-        }
-        status
-        sampleTestCase
-        metaData
-        judgerAvailable
-        judgeType
-        mysqlSchemas
-        enableRunCode
-        enableTestMode
-        enableDebugger
-        envInfo
-        libraryUrl
-        adminUrl
-        challengeQuestion {
-            id
-            date
-            incompleteChallengeCount
-            streakCount
-            type
-        }
-        note
     }
 }
 """
@@ -126,23 +77,18 @@ query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $fi
   ) {
     total: totalNum
     questions: data {
-      acRate
-      content
-      difficulty
-      freqBar
-      frontendQuestionId: questionFrontendId
-      isFavor
-      paidOnly: isPaidOnly
-      status
-      title
-      titleSlug
-      topicTags {
-        name
-        id
-        slug
-      }
-      hasSolution
-      hasVideoSolution
+        acRate
+        title
+        titleSlug
+        content
+        isPaidOnly
+        difficulty
+        exampleTestcases
+        topicTags {
+            name
+            slug
+        }
+        hints
     }
   }
 }

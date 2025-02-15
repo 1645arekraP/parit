@@ -3,9 +3,11 @@ from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm, GroupSettingsForm
 from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
-from .models import UserGroup
-from .utils.LeetcodeWrapper import LeetcodeWrapper
+from .models import UserGroup, Profile, Solution
+from .utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from django.http import JsonResponse
+from asgiref.sync import sync_to_async
+import json
 
 def index(request):
     return render(request, "index.html")
@@ -73,15 +75,18 @@ def group(request, invite_code):
     return HttpResponse("Either this group does not exist or you are not in it!")
 
 @login_required()
-def update_solution(request, username):
-    lc_wrapper = LeetcodeWrapper()
-    try:
-        solutions = lc_wrapper.get_accepted_solutions(username)
-        resp = {}
-        for i, sol in enumerate(solutions):
-            resp[i + 1] = sol.get_title()
-
-        return JsonResponse({"message": "Update successful", "Response": resp})
-    except Exception as e:
-        print(e)
-    return JsonResponse({"error": "Invalid request"}, status=400)
+async def update_group_solutions(request, group_id):
+    if request.method == "POST":
+        try:
+            question_slug = json.loads(request.body)['question_slug']
+            user = request.user
+            username = await sync_to_async(lambda: user.username)()
+            lc_wrapper = LeetcodeWrapper()
+            solutions = await lc_wrapper.get_all_solutions(username, limit=5)
+            for solution in solutions:
+                if solution['titleSlug'] == question_slug:
+                    pass
+            return JsonResponse({"message": "Update successful", "Response": solutions})
+        except Exception as e:
+            #print(e)
+            return JsonResponse({"error": "Invalid request"}, status=400)

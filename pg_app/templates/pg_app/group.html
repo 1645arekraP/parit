@@ -91,10 +91,32 @@
 {% with host=request.get_host %}
 <script>
   var base_url = "{{ scheme }}://{{ host }}";
-  var username = "{{ user.username }}";
 </script>
 {% endwith %}
 {% endwith %}
 <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-<script src="{% static 'js/tab-detection.js' %}"></script>
+<script>
+  var group_id = "{{ group.invite_code }}"
+  var question_slug = "{{ group.question.title_slug }}"
+  const csrftoken = Cookies.get('csrftoken');
+  console.log(csrftoken)
+  console.log(group_id)
+  document.addEventListener("visibilitychange", (event) => {
+      if (document.visibilityState == "visible") {
+          const xhr = new XMLHttpRequest();
+          const data = JSON.stringify({ question_slug: question_slug });
+  
+          xhr.onreadystatechange = function() {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                const jsonData = JSON.parse(xhr.responseText);
+                console.log(jsonData);
+              }
+          }
+          xhr.open("POST", `${base_url}/account/update-group-solutions/${group_id}/`, true);
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          xhr.send(data);
+          console.log(`Sent request using ${data}`)
+      }
+    });
+  </script>
 {% endblock %}
