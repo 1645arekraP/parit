@@ -12,4 +12,5 @@ class LeetcodeTestCase(TestCase):
         self.lw = LeetcodeWrapper()
         
     def test_get_question(self):
+        pass
         #TODO: Write test cases
