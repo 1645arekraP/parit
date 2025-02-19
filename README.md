@@ -1,1 +1,1 @@
-# polygrind
+# Parit 🦜 (formerly known as PolyGrind)
