@@ -9,6 +9,7 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
+from typing import Dict, Self
 
 class CustomUserManager(BaseUserManager):
     """
@@ -108,15 +109,10 @@ class Profile(models.Model):
     )
 
     profile_is_active = models.BooleanField(default=True)
-    
     acceptance_rate = models.FloatField(default=0.0)
-
     streak = models.IntegerField(default=0)
-
     friends = models.ManyToManyField("self", blank=True, symmetrical=True)
-
     questions = models.ManyToManyField("Question", through="QuestionRelation")
-
 
 
     @classmethod
@@ -155,26 +151,57 @@ class Solution(models.Model):
     """
     Model representing a user's latest submission.
     """
+    STATUS_CHOICES = {
+        ('has_not_started', _('Has not started')),
+        ('in_progress', _('In progress')),
+        ('solved', _('Solved'))
+    }
+
     profile = models.ForeignKey(
         "Profile",
         on_delete=models.CASCADE,
         related_name='solutions',
     )
     question = models.ForeignKey("pg_app.Question", on_delete=models.CASCADE, default="two-sum")
-    question_slug = models.IntegerField(default=1)
-    memory = models.FloatField()
-    runtime = models.FloatField()
-    tags = models.JSONField()
-    accepted = models.BooleanField(default=False)
-    date = models.DateTimeField(default=now)
+    memory = models.CharField(default=-1, blank=True, max_length=12)
+    runtime = models.CharField(default=-1, blank=True, max_length=12)
+    status = models.CharField(choices=STATUS_CHOICES, default='has_not_started', max_length=28)
+    last_updated = models.CharField(default=str(float('inf')), max_length=250)
     attempts = models.IntegerField(default=0)
-    attempt_timestamps = models.JSONField(default=list) #
-    # Not sure what the char field for this should be or the max length
-    code = models.TextField(blank=True)
 
-    class Meta:
-        unique_together = ("profile", "question")
-        ordering = ["-date"]
+    #code = models.TextField(blank=True) #TODO: Decide on a max length
+
+    #class Meta:
+    #    unique_together = ("profile", "question")
+    #    ordering = ["-date"]
+
+    @classmethod
+    def create_from_leetcode(cls, question, profile, solution_object):
+        try:
+            existing = cls.objects.get(question=question, profile=profile)
+            if int(solution_object.timestamp) <= int(existing.last_updated):
+                return existing, False
+        except cls.DoesNotExist:
+            pass
+        
+        #TODO: Find a better way of setting this
+        choice = 'In Progress'
+        if solution_object.status=='Accepted':
+            choice = 'Accepted'
+
+        defaults = {
+            'memory': solution_object.memory,
+            'runtime': solution_object.runtime,
+            'last_updated': solution_object.timestamp,
+            'status': choice
+        }
+        
+        return cls.objects.update_or_create(
+            question=question,
+            profile=profile,
+            defaults=defaults
+        )
+
 
 class Question(models.Model):
     topic_tags = models.JSONField(null=True, blank=True)
@@ -189,10 +216,7 @@ class Question(models.Model):
 
     @classmethod
     def get_new_question(cls, category):
-        """
-        This function updates the question daily. 
-        #TODO: Not saving correctly
-        """
+        #TODO: REFACTOR
         question = None
         try:
             questions = cls.objects.filter(pool_tag__contains=category)
@@ -235,7 +259,7 @@ class UserGroup(models.Model):
         if not self.invite_code:
             self.invite_code = shortuuid.ShortUUID().random(length=8)
         
-        # Hacked together solution.
+        # Hacked together solution. TODO: Find a better way to do this
         #self.question = Question.get_new_question(self.question_pool_type)
         self.question = Question.objects.all()[0]
 
@@ -252,8 +276,22 @@ class UserGroup(models.Model):
         self.question = self.question.get_new_question(self.question_pool_type)
         self.save()
 
+    def get_member_solutions(self) -> Dict:
+        solutions = [] #TODO: Change to hashmap
+        for member in self.members.all():
+            #TODO: Maybe change to filter so it is only one query?
+            solution, _ = Solution.objects.get_or_create(
+                question=self.question,
+                profile=member.profile,
+                defaults={
+                    'status': 'Not Started'
+                }
+            )
+            solutions.append((member, solution))
+        return solutions
+    
     @staticmethod
-    def userBelongsToGroup(user, group_id):
+    def userBelongsToGroup(user, group_id) -> Self:
         """
         Method to validate if a user is in the group they are trying to join. 
         Returns the group object if they are in the group and returns None if they are not.

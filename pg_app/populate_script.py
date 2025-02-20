@@ -12,35 +12,30 @@ from pg_app.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from pg_app.models import Question
 from pg_app.utils.scripts.question_pools import blind_75, neetcode_150, neetcode_250
 
+Question.objects.all().delete() 
 lcw = LeetcodeWrapper()
-data = asyncio.run(lcw.get_accepted_solutions(username="parkera", limit=5))
-for s in data.solutions:
-    print(f"{s.title}: {s.status}")
+data = asyncio.run(lcw.get_questions(limit=30))
+questions = data.questions
 
-
-
-"""for q in questions['questions']:
+for q in questions:
     question_pools = ['LC_ALL']
-    if q['titleSlug'] in blind_75:
+    if q.title_slug in blind_75:
         question_pools.append("BLIND_75")
-    if q['titleSlug'] in neetcode_150:
+    if q.title_slug in neetcode_150:
         question_pools.append("NEETCODE_150")
-    if q['titleSlug'] in neetcode_250:
+    if q.title_slug in neetcode_250:
         question_pools.append("NEETCODE_250")
-    topic_tags = []
-    for tag in q['topicTags']:
-        topic_tags.append(tag['name'])
     try:
         Question.objects.create(
-            ac_rate = q['acRate'],
-            content = q['content'],
-            difficulty = q['difficulty'],
-            is_paid = q['paidOnly'],
-            link = "",
-            title = q['title'],
-            title_slug = q['titleSlug'],
-            topic_tags = topic_tags,
+            ac_rate = q.ac_rate,
+            content = q.content,
+            difficulty = q.difficulty,
+            is_paid = q.is_paid,
+            link = q.link,
+            title = q.title,
+            title_slug = q.title_slug,
+            topic_tags = q.topic_tags,
             pool_tag=question_pools
         )
     except Exception as e:
-        print(e)"""
+        print(e)

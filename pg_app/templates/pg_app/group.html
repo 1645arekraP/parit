@@ -25,14 +25,11 @@
         {{ form }}
         <div class="modal-action">
           <button type="submit" class="btn">Submit</button>
-          <button type="button" class="btn btn-outline" onclick="document.getElementById('usergroup_settings_modal').close()">Cancel</button>
         </div>
       </form>
     </div>
   </dialog>  
 </div>
-
-
 
 <!-- Using flex to manage layout -->
 <div class="flex w-full h-[calc(100vh-10rem)]">
@@ -50,73 +47,33 @@
     <div class="border-solid rounded-md border-2 overflow-auto p-5 ml-2.5 mr-5">
       <div class="flex justify-between">
         <h3>Members</h3>
-        <button class="btn btn-outline btn-primary btn-xs flex">Invite</button>
+        <div class="flex flex-row">
+          <button class="btn btn-outline btn-primary btn-xs flex">Invite</button>
+          <!-- TODO: Form looks like it added some padding -->
+           <button hx-get="./refresh" 
+                   hx-target="#group-table"
+                   hx-swap="OuterHTML"
+                   class="ml-5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+           </button>
+        </form>
+        </div>
       </div>
-      <!-- Group Table -->
-      <div class="overflow-x-auto">
-        <table class="table">
-          <!-- head -->
-          <thead>
-            <tr>
-              <th></th>
-              <th>Username</th>
-              <th>Progress</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- rows -->
-            {% for user in group.members.all %}
-              <tr>
-                <th>{{forloop.counter}}</th>
-                <td>{{user.username}}</td>
-                <td>Has Not Started</td>
-                <th>
-                  <button class="btn btn-ghost btn-xs">details</button>
-                </th>    
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <div id="group-table">
+        {% include 'partials/members_table.html' %}
       </div>
     </div>
     
     <!-- Second Box -->
     <div class="border-solid rounded-md border-2 overflow-auto p-5 ml-2.5 mr-5 mt-5">
-      I Should be a code portion or notes portion
+      <pre><code>language="javascript">
+        function example() {
+            console.log("Hello World");
+        }
+        </code>
     </div>
   </div>
 </div>
-{% with scheme=request.scheme %}
-{% with host=request.get_host %}
-<script>
-  var base_url = "{{ scheme }}://{{ host }}";
-</script>
-{% endwith %}
-{% endwith %}
-<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
-<script>
-  var group_id = "{{ group.invite_code }}"
-  var question_slug = "{{ group.question.title_slug }}"
-  const csrftoken = Cookies.get('csrftoken');
-  console.log(csrftoken)
-  console.log(group_id)
-  document.addEventListener("visibilitychange", (event) => {
-      if (document.visibilityState == "visible") {
-          const xhr = new XMLHttpRequest();
-          const data = JSON.stringify({ question_slug: question_slug });
-  
-          xhr.onreadystatechange = function() {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                const jsonData = JSON.parse(xhr.responseText);
-                console.log(jsonData);
-              }
-          }
-          xhr.open("POST", `${base_url}/account/update-group-solutions/${group_id}/`, true);
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          xhr.send(data);
-          console.log(`Sent request using ${data}`)
-      }
-    });
-  </script>
 {% endblock %}

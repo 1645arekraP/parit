@@ -2,6 +2,7 @@ from pg_app.utils.wrappers.abstract_wrapper import AbstractRequestWrapper
 from pg_app.utils.wrappers.leetcode.queries import RECENT_SUBMISSIONS, RECENT_AC_SUBMISSIONS, DAILY_QUESTION, PROBLEM_QUESTION_LIST, GET_SELECTED_PROBLEM
 from pg_app.utils.wrappers.responses import QuestionResponse, QuestionListResponseList, ProfileResponse, SolutionResponse, SolutionResponseList
 from typing import Dict
+from datetime import datetime
 
 class LeetcodeWrapper(AbstractRequestWrapper):
     """
@@ -77,7 +78,6 @@ class LeetcodeWrapper(AbstractRequestWrapper):
             lang=data['lang'],
             runtime=data['runtime'],
             memory=data['memory'],
-            time=data['time'],
             status=data['statusDisplay']
         )
 

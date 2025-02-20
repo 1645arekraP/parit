@@ -1,0 +1,47 @@
+<div class="overflow-x-auto">
+    <table class="table">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th></th>
+          <th>Username</th>
+          <th>Progress</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Instead of iterating through all group members, iterate through a custom return dataset for user, solution -->
+        {% for user, solution in group_data %}
+          <tr>
+            <th>{{forloop.counter}}</th>
+            <td>{{user.username}}</td>
+            <td>
+              {{ solution.status }}
+            </td>
+            <th>
+                <!-- Might be better to somehow cache this information instead of using a request -->
+              <button hx-get="/{{user.username}}/solution/{{group.question.title_slug}}"
+                      hx-target="#solution_content"
+                      hx-swap="innerHTML"
+                      onclick="solution_modal.showModal()"
+                      class="btn btn-ghost btn-xs">
+                details
+            </button>
+            </th>    
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <dialog id="solution_modal" class="modal">
+    <div class="modal-box">
+      <!-- Modal Close Button -->
+      <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('solution_modal').close()">✕</button>
+      <div id="solution_content">
+
+      </div>
+
+      <div class="modal-action">
+      </div>
+    </div>
+  </dialog>  

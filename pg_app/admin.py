@@ -29,9 +29,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
     search_fields = ('user__email', 'user__username')
 
-@admin.register(Solution)
-class SolutionAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'question__title_slug', 'memory', 'runtime', 'accepted', 'date', 'attempts')
-    search_fields = ('question__title_slug', 'profile__user__email')
-    list_filter = ('accepted', 'tags')
-    ordering = ('-date',)
+#@admin.register(Solution)
+#class SolutionAdmin(admin.ModelAdmin):
+#    list_display = ('profile', 'question__title_slug', 'memory', 'runtime', 'accepted', 'date', 'attempts')
+#    search_fields = ('question__title_slug', 'profile__user__email')
+#    list_filter = ('accepted', 'tags')
+#    ordering = ('-date',)

@@ -73,4 +73,3 @@ class GroupSettingsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['members'].queryset = self.instance.members.all()  # Filter by group
         self.fields['invite_code'].initial = self.instance.invite_code
-

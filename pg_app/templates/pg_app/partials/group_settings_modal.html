@@ -1,0 +1,21 @@
+<button class="" onclick="usergroup_settings_modal.showModal()">
+      
+</button>
+<dialog id="usergroup_settings_modal" class="modal">
+    <div class="modal-box">
+      <!-- Modal Close Button -->
+      <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('usergroup_settings_modal').close()">✕</button>
+  
+      <h3 class="text-lg font-bold">Group Settings</h3>
+  
+      <!-- Single Form -->
+      <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <div class="modal-action">
+          <button type="submit" class="btn">Submit</button>
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('usergroup_settings_modal').close()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </dialog>  

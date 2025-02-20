@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pg_app/templates/pg_app/**/*.html'],
+  content: [
+    './pg_app/templates/pg_app/**/*.html',
+    "./static/src/**/*.{html,js,css}"
+  ],
   theme: {
     extend: {},
   },
