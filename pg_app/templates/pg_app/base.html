@@ -29,15 +29,19 @@
             <ul
               tabindex="0"
               class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-              <li><a href="/account/profile">Profile</a></li>
+              <li><a href="/accounts/profile">Profile</a></li>
               <li><a>Playground</a></li>
               <li><a>Settings</a></li>
-              <li><a href="">Logout</a></li>
+              {% if user.is_authenticated %}
+                <li><a href="/accounts/logout">Logout</a></li>
+              {%else%}
+                <li><a href="/accounts/login">Login</a></li>
+              {%endif%}
             </ul>
           </div>
         </div>
         <div class="navbar-center">
-          <a class="btn btn-ghost text-xl">PolyGrind</a>
+          <a class="btn btn-ghost text-xl" href="/">PolyGrind</a>
         </div>
         <div class="navbar-end">
             <label class="swap swap-rotate pr-5">

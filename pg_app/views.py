@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .forms import RegistrationForm, LoginForm, GroupSettingsForm
-from django.contrib.auth import authenticate, login as dlogin
+from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
 from .models import UserGroup, Profile, Solution
 from .utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
@@ -50,7 +50,33 @@ def profile(request):
     user = request.user
     numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
-    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
+    try:
+    # Fetch tags with positive qualityPoints
+        positive_tags = user.profile.tag_stats.filter(qualityPoints__gt=0).count.all()
+
+    # Fetch tags with negative qualityPoints
+        negative_tags = user.profile.tag_stats.filter(qualityPoints__lt=0).all()
+
+    except AttributeError as e:
+        print(f"AttributeError: {e}. Ensure 'user' has a valid profile and related tag stats.")
+        positive_tags = []
+        negative_tags = []
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        positive_tags = []
+        negative_tags = []
+
+    return render(request,
+                    "profile.html",
+                        {  "user": user,
+                        "numberOfExcelledQuestions": numberOfExcelledQuestions,
+                        "numberOfStruggledQuestions": numberOfStruggledQuestions,
+                        "positive_tags": positive_tags,
+                        "negative_tags": negative_tags }) 
+    #user = request.user
+    #numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
+    #numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
+    #return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
 
 
 @login_required()
@@ -90,3 +116,8 @@ async def update_group_solutions(request, group_id):
         except Exception as e:
             #print(e)
             return JsonResponse({"error": "Invalid request"}, status=400)
+        
+@login_required()
+def logout_view(request):
+    logout(request)
+    return redirect('login')

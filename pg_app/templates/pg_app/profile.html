@@ -6,7 +6,7 @@
 
 <div class="min-h-screen">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-8">
+    <div class="bg-base-200 text-base-content py-8">
         <div class="container mx-auto flex flex-col md:flex-row items-center gap-6 px-4 md:px-8">
             <div class="flex-shrink-0">
                 <div class="avatar">
@@ -17,39 +17,151 @@
             </div>
             <div class="flex-grow">
                 <h1 class="text-3xl font-bold">{{user.username}}</h1>
-                <p class="text-lg text-gray-200 mt-2">{{user.email}}</p>
+                <p class="text-lg text-base-content mt-2">{{user.email}}</p>
                 <div class="mt-4">
-                    <span class="badge badge-secondary">Member Since: {{user.date_joined}}</span>
+                    <span class="badge badge-info">Member Since: {{user.date_joined}}</span>
                 </div>
             </div>
             <div class="flex flex-col gap-2">
                 <a href="#" class="btn btn-outline btn-sm">Edit Profile</a>
-                <a href="" class="btn btn-error btn-sm">Logout</a>
+                <a href="/account/logout" class="btn btn-error btn-sm">Logout</a>
             </div>
         </div>
     </div>
 
+
+    <!-- Streak and Questions Section -->
+    <div class="container mx-auto mt-8 px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!--
+      Tags User Struggles With 
+      <div class="card bg-base-200 shadow-lg rounded-lg p-5">
+          <h2 class="text-2xl font-bold text-base-content mb-4">Current Streak</h2>
+          <div class="flex flex-col items-center">
+              Streak Count 
+              <div class="flex items-center gap-4 mb-4">
+                  <div class="text-4xl font-extrabold text-primary">🔥</div>
+                  <div class="text-3xl font-bold text-base-content">{{user.profile.streak}} Days</div>
+              </div>
+          </div>
+      </div>
+      -->
+      
+      <div class="stats shadow bg-base-200">
+          <div class="stat text-center">
+              <div class="stat-figure text-primary">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="inline-block h-8 w-8 stroke-current">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                
+              </div>
+              <div class="stat-title text-center">Current Streak</div>
+              <div class="stat-value text-primary text-center">{{user.profile.streak}} Days</div>
+              <div class="stat-desc text-center">Optional description</div>
+            </div>
+        
+          <div class="stat">
+            <div class="stat-figure text-secondary">
+
+            </div>
+            <div class="stat-title text-center">Acceptance Rate</div>
+            <div class="stat-value flex items-center justify-center">
+              <div class="radial-progress text-primary text-center" style=("--value: {{ user.profile.acceptance_rate }};")  role="progressbar">{{user.profile.acceptance_rate}}%</div>
+            </div>
+          </div>
+        </div>
+
+      <!-- Questions Stats -->
+      <div class="stats shadow bg-base-200">
+          
+          <div class="stat">
+            <div class="stat-figure text-error">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block h-8 w-8 stroke-current">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+              </svg>
+            </div>
+            <div class="stat-title text-center">Struggled Questions</div>
+            <div class="stat-value text-error text-center">{{numberOfStruggledQuestions}}</div>
+            <div class="stat-desc text-center">Optional description</div>
+          </div>
+        
+          <div class="stat">
+            <div class="stat-figure text-success">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block h-8 w-8 stroke-current">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+            <div class="stat-title text-center">Excelled Questions</div>
+            <div class="stat-value text-success text-center">{{numberOfExcelledQuestions}}</div>
+            <div class="stat-desc text-center">Optional description</div>
+          </div>
+        
+        </div>
+        <!--
+      <div class="card bg-base-200 shadow-lg rounded-lg p-5">
+          <h2 class="text-2xl font-bold text-base-content mb-4">Questions Stats</h2>
+          <div class="grid grid-cols-2 gap-4">
+              <div class="stat">
+                  <h3 class="stat-title text-base-content">Struggled Questions</h3>
+                  <p class="stat-value text-base-content">{{numberOfStruggledQuestions}}</p>
+              </div>
+              <div class="stat">
+                  <h3 class="stat-title text-base-content">Excelled Questions</h3>
+                  <p class="stat-value text-base-content">{{numberOfExcelledQuestions}}</p>
+              </div>
+              <div class="stat">
+                  <h3 class="stat-title text-base-content">Overall Acceptance Rate</h3>
+                  <div class="radial-progress text-primary" style=("--value: {{ user.profile.acceptance_rate }};")  role="progressbar">{{user.profile.acceptance_rate}}%</div>
+              </div>
+          </div>
+      </div>
+      -->
+  </div>
+  
     <!-- Groups Details Section -->
-    <div class="container mx-auto mt-8 px-4 md:px-8">
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Your Groups</h2>
+    <div class="container mx-auto mt-8 px-4 md:px-8 text-center">
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6 text-center">
+            <h2 class="text-2xl font-bold text-base-content mb-4 text-center">Your Groups</h2>
             <div class="overflow-x-auto">
-                <table class="table w-full">
+                <table class="table w-full text-center">
                     <thead>
                         <tr>
-                            <th class="text-left">Group Name</th>
-                            <th class="text-left">Members</th>
-                            <th class="text-left">Invite Code</th>
-                            <th class="text-left">Actions</th>
+                            <th class="text-left text-center">Group Name</th>
+                            <th class="text-left text-center">Members</th>
+                            <th class="text-left text-center">Invite Code</th>
+                            <th class="text-left text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% if user.user_groups.all %}
                             {% for group in user.user_groups.all %}
                             <tr>
-                                <td class="text-gray-800">{{ group.group_name }}</td>
-                                <td class="text-gray-600">{{ group.members.count }}</td>
-                                <td class="text-gray-600">{{ group.invite_code }}</td>
+                                <td class="text-base-content">{{ group.group_name }}</td>
+                                <td class="text-base-content">{{ group.members.count }}</td>
+                                <td class="text-base-content">{{ group.invite_code }}</td>
                                 <td>
                                     <a 
                                         href="{% url 'group' invite_code=group.invite_code %}" 
@@ -61,7 +173,7 @@
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="4" class="text-center text-gray-600">No Groups</td>
+                                <td colspan="4" class="text-center text-base-content">No Groups</td>
                             </tr>
                         {% endif %}
                     </tbody>
@@ -69,49 +181,105 @@
             </div>
         </div>
     </div>
-    
 
-    <!-- Streak and Questions Section -->
-    <div class="container mx-auto mt-8 px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Tags User Struggles With -->
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Current Streak</h2>
-            <div class="flex flex-col items-center">
-                <!-- Streak Count -->
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="text-4xl font-extrabold text-indigo-600">🔥</div>
-                    <div class="text-3xl font-bold text-gray-800">{{user.profile.streak}} Days</div>
-                </div>
-        
-        
-            </div>
-        </div>
-        
-
-        <!-- Questions Stats -->
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Questions Stats</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="stat">
-                    <h3 class="stat-title text-gray-600">Struggled Questions</h3>
-                    <p class="stat-value text-red-600">{{numberOfStruggledQuestions}}</p>
-                </div>
-                <div class="stat">
-                    <h3 class="stat-title text-gray-600">Excelled Questions</h3>
-                    <p class="stat-value text-green-600">{{numberOfExcelledQuestions}}</p>
-                </div>
-                <div class="stat">
-                    <h3 class="stat-title text-gray-600">Overall Acceptance Rate</h3>
-                    <div class="radial-progress text-primary" style=("--value: {{ user.profile.acceptance_rate }};")  role="progressbar">{{user.profile.acceptance_rate}}%</div>
-                </div>
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% if user.profile.friends.all %}
+                    {% for friend in user.profile.friends.all %}
+                    <!-- Friend Card -->
+                    <div class="card bg-base-100 shadow-md rounded-lg p-4 text-center">
+                        <div class="avatar mb-3 mx-auto">
+                            <div class="w-16 h-16 rounded-full">
+                                <img src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg" alt="Friend Avatar">
+                            </div>
+                        </div>
+                        <p class="text-lg font-bold text-base-content">{{ friend.user.username }}</p>
+                        <a href="#" class="text-sm text-primary underline">View Profile</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-base-content col-span-full">You have no friends yet.</p>
+                {% endif %}
             </div>
         </div>
     </div>
+
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+        <div class="overflow-y-auto max-h-[40vh]">
+            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends</h2>
+            {% if user.profile.friends.all %}
+            <table class="table">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th>
+                    <label>
+                      <input type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <th>Name</th>
+                  <th>Title</th>
+                  <th>Title</th>
+                  <th>Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for friend in user.profile.friends.all %}
+                <!-- row 1 -->
+                <tr>
+                  <th>
+                    <label>
+                      <input type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://res.cloudinary.com/enchanting/q_70,f_auto,w_1024,h_683,c_fit/quark-web/2024/09/SamEdmonds20-20Adelie20closeup202.jpg"
+                            alt="Avatar Tailwind CSS Component" />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{{friend.user.username}}</div>
+                        <div class="text-sm opacity-50">United States</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    bla bla bla
+                    <br />
+                    <span class="badge badge-ghost badge-sm">bla bla bla</span>
+                  </td>
+                  <td>Purple</td>
+                  <th>
+                    <button class="bg-base-300 btn btn-ghost btn-xs">view profile</button>
+                  </th>
+                </tr>
+                {% endfor %}
+              </tbody>
+              
+            </table>
+            {% else %}
+                    <p class="text-center text-base-content col-span-full">You have no friends yet.</p>
+            {% endif %}
+          </div>
+        </div>
+    </div>
+
+    
+    
+
+    
     
     <!-- Excelling Tags Section -->
     <div class="container mx-auto mt-8 px-4 md:px-8">
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h3 class="text-lg font-semibold text-gray-700 mb-2">Tags You're Excelling At:</h3>
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-base-content mb-2">Tags You're Excelling At:</h3>
             <div class="flex flex-wrap gap-2">
                 <span class="badge badge-success">Dynamic Programming</span>
                 <span class="badge badge-success">Graphs</span>
@@ -121,8 +289,8 @@
     </div>
     <!--Struggled Tags Section-->
     <div class="container mx-auto mt-8 px-4 md:px-8">
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4">Tags You Struggle With</h2>
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-base-content mb-4">Tags You Struggle With</h2>
             <div class="flex flex-wrap gap-2">
                 <span class="badge badge-error">Dynamic Programming</span>
                 <span class="badge badge-error">Graphs</span>
@@ -132,8 +300,8 @@
     </div>
     <!-- Achievements Section -->
     <div class="container mx-auto mt-8 px-4 md:px-8">
-        <div class="card bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-gray-700">Achievements</h2>
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-base-content">Achievements</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 <div class="badge badge-success p-4 text-white text-center">
                     <p>First Group</p>
@@ -153,5 +321,7 @@
 </div>
 
         
-
+<script>
+    console.log({{positive_tags}})
+</script>
 {% endblock %}
