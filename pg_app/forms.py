@@ -74,3 +74,12 @@ class GroupSettingsForm(forms.ModelForm):
         self.fields['members'].queryset = self.instance.members.all()  # Filter by group
         self.fields['invite_code'].initial = self.instance.invite_code
 
+class AddFriendForm(forms.Form):
+    friend_email = forms.EmailField(
+        label="Friend's Email",
+        widget=forms.EmailInput(attrs={
+            'class': 'input input-bordered',
+            'placeholder': 'Enter friend\'s email'
+        })
+    )
+

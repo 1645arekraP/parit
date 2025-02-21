@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
-from .forms import RegistrationForm, LoginForm, GroupSettingsForm
+from .forms import RegistrationForm, LoginForm, GroupSettingsForm, AddFriendForm
+from django.contrib import messages
 from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
-from .models import UserGroup, Profile, Solution
+from .models import UserGroup, Profile, Solution, CustomUser, FriendRequest
 from .utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from django.http import JsonResponse
 from asgiref.sync import sync_to_async
@@ -47,6 +48,45 @@ def login(request):
 
 @login_required()
 def profile(request):
+    if request.method == "POST":
+        clear_messages(request)
+        form = AddFriendForm(request.POST)
+        if form.is_valid():
+            friend_email = form.cleaned_data["friend_email"]
+
+            # Prevent sending request to self
+            if friend_email == request.user.email:
+                messages.error(request, "You cannot send a friend request to yourself.")
+                print("CANT SEND TO YOUR SELF")
+                return redirect("profile")
+
+            try:
+                friend_user = CustomUser.objects.get(email=friend_email)
+            except CustomUser.DoesNotExist:
+                messages.error(request, "No user found with that email.")
+                return redirect("profile")
+
+            # Check if already friends
+            user_profile = request.user.profile
+            friend_profile = friend_user.profile
+            if friend_profile in user_profile.friends.all():
+                messages.info(request, "You are already friends.")
+                return redirect("profile")
+
+            # Check for an existing pending request
+            if FriendRequest.objects.filter(
+                    from_user=request.user, to_user=friend_user, status="pending"
+                ).exists():
+                messages.info(request, "Friend request already sent.")
+                return redirect("profile")
+
+            # Create and save the friend request
+            FriendRequest.objects.create(from_user=request.user, to_user=friend_user)
+            messages.success(request, "Friend request sent!")
+            return redirect("profile")
+    else:
+        form = AddFriendForm()
+
     user = request.user
     numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
@@ -72,7 +112,8 @@ def profile(request):
                         "numberOfExcelledQuestions": numberOfExcelledQuestions,
                         "numberOfStruggledQuestions": numberOfStruggledQuestions,
                         "positive_tags": positive_tags,
-                        "negative_tags": negative_tags }) 
+                        "negative_tags": negative_tags,
+                         "form": form }) 
     #user = request.user
     #numberOfExcelledQuestions = user.profile.questions.filter(questionrelation__relation_type="excelled").count()
     #numberOfStruggledQuestions = user.profile.questions.filter(questionrelation__relation_type="struggled").count()
@@ -121,3 +162,32 @@ async def update_group_solutions(request, group_id):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def clear_messages(request):
+    # Clears the messages
+    list(messages.get_messages(request))
+
+
+@login_required
+def respond_friend_request(request, request_id, response):
+    try:
+        friend_request = FriendRequest.objects.get(id=request_id, to_user=request.user, status="pending")
+    except FriendRequest.DoesNotExist:
+        messages.error(request, "Friend request not found.")
+        return redirect("profile")
+
+    if response == "accept":
+        # Add each other as friends
+        request.user.profile.friends.add(friend_request.from_user.profile)
+        friend_request.from_user.profile.friends.add(request.user.profile)
+        friend_request.status = "accepted"
+        friend_request.save()
+        messages.success(request, "Friend request accepted!")
+    elif response == "reject":
+        friend_request.status = "rejected"
+        friend_request.save()
+        messages.info(request, "Friend request rejected.")
+    else:
+        messages.error(request, "Invalid response.")
+    
+    return redirect("profile")

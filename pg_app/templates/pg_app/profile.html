@@ -24,11 +24,57 @@
             </div>
             <div class="flex flex-col gap-2">
                 <a href="#" class="btn btn-outline btn-sm">Edit Profile</a>
-                <a href="/account/logout" class="btn btn-error btn-sm">Logout</a>
+                <a href="/accounts/logout" class="btn btn-error btn-sm">Logout</a>
             </div>
         </div>
     </div>
 
+    <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
+        {% if form %}
+            <h2>Send a Friend Request</h2>
+            <form action="{% url 'profile' %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Send Request</button>
+            </form>
+        {% endif %}
+        
+        {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+    </div>
+
+    <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
+        <h2 class="text-2xl font-bold text-base-content mb-4">Incoming Friend Requests</h2>
+        {% if user.friend_requests_received.all %}
+          <ul>
+            {% for req in user.friend_requests_received.all %}
+              {% if req.status == "pending" %}
+                <li class="mb-2">
+                  {{ req.from_user.username }} ({{ req.from_user.email }})
+                  <form action="{% url 'respond_friend_request' req.id 'accept' %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                  </form>
+                  <form action="{% url 'respond_friend_request' req.id 'reject' %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error btn-sm">Reject</button>
+                  </form>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No pending friend requests.</p>
+        {% endif %}
+      </div>
+      
 
     <!-- Streak and Questions Section -->
     <div class="container mx-auto mt-8 px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -209,7 +255,7 @@
     <div class="container mx-auto mt-8 px-4 md:px-8">
         <div class="card bg-base-200 shadow-lg rounded-lg p-6">
         <div class="overflow-y-auto max-h-[40vh]">
-            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends</h2>
+            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends 2nd style</h2>
             {% if user.profile.friends.all %}
             <table class="table">
               <!-- head -->
