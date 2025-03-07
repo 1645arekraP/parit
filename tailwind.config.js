@@ -1,18 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
-    './pg_app/templates/pg_app/**/*.html',
-    "./static/src/**/*.{html,js,css}"
+    "./static/src/**/*.{html,js,css}",
+    './templates/**/*.html',
+    './apps/**/templates/**/*.html'
   ],
   theme: {
     extend: {},
   },
-  daisyui: {
-    themes: ["emerald", "dim"],
-  },
-  plugins: [
-    require("@tailwindcss/typography"),
-    require('daisyui'),
-  ],
 }
 
