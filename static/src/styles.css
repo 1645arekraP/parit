@@ -7,14 +7,12 @@
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
     --color-red-100: oklch(0.936 0.032 17.717);
-    --color-red-500: oklch(0.637 0.237 25.331);
     --color-red-600: oklch(0.577 0.245 27.325);
     --color-green-600: oklch(0.627 0.194 149.214);
     --color-blue-500: oklch(0.623 0.214 259.815);
     --color-indigo-600: oklch(0.511 0.262 276.966);
     --color-gray-50: oklch(0.985 0.002 247.839);
     --color-gray-200: oklch(0.928 0.006 264.531);
-    --color-gray-500: oklch(0.551 0.027 264.364);
     --color-gray-600: oklch(0.446 0.03 256.802);
     --color-gray-700: oklch(0.373 0.034 259.733);
     --color-gray-800: oklch(0.278 0.033 256.848);
@@ -1079,9 +1077,6 @@
   .absolute {
     position: absolute;
   }
-  .fixed {
-    position: fixed;
-  }
   .static {
     position: static;
   }
@@ -1126,9 +1121,6 @@
   }
   .right-2 {
     right: calc(var(--spacing) * 2);
-  }
-  .z-1 {
-    z-index: 1;
   }
   .z-50 {
     z-index: 50;
@@ -1424,9 +1416,6 @@
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
-  .h-5 {
-    height: calc(var(--spacing) * 5);
-  }
   .h-6 {
     height: calc(var(--spacing) * 6);
   }
@@ -1451,23 +1440,14 @@
   .w-4 {
     width: calc(var(--spacing) * 4);
   }
-  .w-5 {
-    width: calc(var(--spacing) * 5);
-  }
   .w-6 {
     width: calc(var(--spacing) * 6);
   }
   .w-12 {
     width: calc(var(--spacing) * 12);
   }
-  .w-16 {
-    width: calc(var(--spacing) * 16);
-  }
   .w-24 {
     width: calc(var(--spacing) * 24);
-  }
-  .w-52 {
-    width: calc(var(--spacing) * 52);
   }
   .w-auto {
     width: auto;
@@ -1726,14 +1706,8 @@
     --badge-color: var(--color-warning);
     color: var(--color-warning-content);
   }
-  .text-blue-500 {
-    color: var(--color-blue-500);
-  }
   .text-gray-200 {
     color: var(--color-gray-200);
-  }
-  .text-gray-500 {
-    color: var(--color-gray-500);
   }
   .text-gray-600 {
     color: var(--color-gray-600);
@@ -1752,9 +1726,6 @@
   }
   .text-primary {
     color: var(--color-primary);
-  }
-  .text-red-500 {
-    color: var(--color-red-500);
   }
   .text-red-600 {
     color: var(--color-red-600);
@@ -1854,13 +1825,6 @@
     --btn-color: var(--color-primary);
     --btn-fg: var(--color-primary-content);
   }
-  .hover\:underline {
-    &:hover {
-      @media (hover: hover) {
-        text-decoration-line: underline;
-      }
-    }
-  }
   .md\:grid-cols-2 {
     @media (width >= 48rem) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1884,11 +1848,6 @@
   .lg\:flex {
     @media (width >= 64rem) {
       display: flex;
-    }
-  }
-  .lg\:hidden {
-    @media (width >= 64rem) {
-      display: none;
     }
   }
 }

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import SignupForm, LoginForm
-from django.contrib.auth import authenticate, login as dloginת, logout
+from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
@@ -32,11 +32,11 @@ def login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            email = request.POST["email"]
+            username = request.POST["username"]
             password = request.POST["password"]
-            print(email, password)
+            print(username, password)
             # TODO: Handle logic for if a user doesnt exist. Not sure if this should go here or in the form
-            user = authenticate(email=email, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 dlogin(request, user)
                 return redirect("/accounts/profile/") #TODO: Bugged and will not work

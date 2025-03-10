@@ -64,9 +64,9 @@ class SignupForm(forms.ModelForm):
         return user
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label="email", widget=forms.EmailInput(attrs={
+    username = forms.CharField(label="username", widget=forms.TextInput(attrs={
             'class': 'grow',
-            'placeholder': 'Enter your email',
+            'placeholder': 'Enter your username',
         }))
     password = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
             'class': 'grow',
