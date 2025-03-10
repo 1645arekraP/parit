@@ -1,18 +1,27 @@
 from django.shortcuts import render, redirect
 from .forms import SignupForm, LoginForm
-from django.contrib.auth import authenticate, login as dlogin
+from django.contrib.auth import authenticate, login as dloginת, logout
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
+from django.db import IntegrityError
 
 def signup(request):
     #TODO: Cleanup
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
-            form.save()
-            print("Form was valid!")
+            try:
+                form.save()
+                print("Form was valid!")
+            except IntegrityError as e:
+                if 'UNIQUE constraint failed' in str(e):
+                    form.add_error('username', 'This LeetCode username is already taken.')
+                print("Form was not valid due to unique constraint!")
+                print(e)
         else:
+            print("Form was not valid!")
+            print(form.errors)
             pass
     else:
         form = SignupForm()
@@ -49,3 +58,8 @@ def profile(request):
 
 def settings(request):
     pass
+
+@login_required()
+def logout_view(request):
+    logout(request)
+    return redirect('login')
