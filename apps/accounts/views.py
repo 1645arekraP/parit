@@ -32,17 +32,15 @@ def login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = request.POST["username"]
-            password = request.POST["password"]
-            print(username, password)
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
             # TODO: Handle logic for if a user doesnt exist. Not sure if this should go here or in the form
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 dlogin(request, user)
                 return redirect("/accounts/profile/") #TODO: Bugged and will not work
             else:
-                print(user)
-                print("Wrong email or password")
+                form.add_error(None, 'Invalid username or password.')
         else:
             pass
     else:
