@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form class="border flex flex-col justify-center items-center " action="" method="post">
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <form  class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box shadow text-center" action="" method="post" >
         {% csrf_token %}
+        <h1 class="mb-3">Sign Up</h1>
         <div>
           {{form.email}}
           <div class="validator-hint hidden">Enter valid email address</div>
@@ -86,6 +88,7 @@
         <input type="submit" value="Submit" class="btn">
     -->
     </form>
+  </div>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
           var password1 = document.querySelector('input[name="password1"]');

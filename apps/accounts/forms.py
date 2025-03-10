@@ -85,3 +85,11 @@ class LoginForm(forms.Form):
                 raise forms.ValidationError("Invalid username or password")
         return cleaned_data
     
+class AddFriendForm(forms.Form):
+    friend_email = forms.EmailField(
+        label="Friend's Email",
+        widget=forms.EmailInput(attrs={
+            'class': 'input input-bordered',
+            'placeholder': 'Enter friend\'s email'
+        })
+    )

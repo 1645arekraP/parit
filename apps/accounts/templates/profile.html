@@ -24,7 +24,7 @@
             </div>
             <div class="flex flex-col gap-2">
                 <a href="#" class="btn btn-outline btn-sm">Edit Profile</a>
-                <a href="" class="btn btn-error btn-sm">Logout</a>
+                <a href="/accounts/logout" class="btn btn-error btn-sm">Logout</a>
             </div>
         </div>
     </div>
@@ -70,6 +70,141 @@
         </div>
     </div>
     
+
+    <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
+        {% if form %}
+            <h2>Send a Friend Request</h2>
+            <form action="{% url 'profile' %}" method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Send Request</button>
+            </form>
+        {% endif %}
+        
+        {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+    </div>
+
+    <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
+        <h2 class="text-2xl font-bold text-base-content mb-4">Incoming Friend Requests</h2>
+        {% if user.friend_requests_received.all %}
+          <ul>
+            {% for req in user.friend_requests_received.all %}
+              {% if req.status == "pending" %}
+                <li class="mb-2">
+                  {{ req.from_user.username }} ({{ req.from_user.email }})
+                  <form action="{% url 'respond_friend_request' req.id 'accept' %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                  </form>
+                  <form action="{% url 'respond_friend_request' req.id 'reject' %}" method="POST" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-error btn-sm">Reject</button>
+                  </form>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No pending friend requests.</p>
+        {% endif %}
+      </div>
+
+      <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% if user.profile.friends.all %}
+                    {% for friend in user.profile.friends.all %}
+                    <!-- Friend Card -->
+                    <div class="card bg-base-100 shadow-md rounded-lg p-4 text-center">
+                        <div class="avatar mb-3 mx-auto">
+                            <div class="w-16 h-16 rounded-full">
+                                <img src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg" alt="Friend Avatar">
+                            </div>
+                        </div>
+                        <p class="text-lg font-bold text-base-content">{{ friend.user.username }}</p>
+                        <a href="#" class="text-sm text-primary underline">View Profile</a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-center text-base-content col-span-full">You have no friends yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto mt-8 px-4 md:px-8">
+        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
+        <div class="overflow-y-auto max-h-[40vh]">
+            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends 2nd style</h2>
+            {% if user.profile.friends.all %}
+            <table class="table">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th>
+                    <label>
+                      <input type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <th>Name</th>
+                  <th>Title</th>
+                  <th>Title</th>
+                  <th>Profile</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for friend in user.profile.friends.all %}
+                <!-- row 1 -->
+                <tr>
+                  <th>
+                    <label>
+                      <input type="checkbox" class="checkbox" />
+                    </label>
+                  </th>
+                  <td>
+                    <div class="flex items-center gap-3">
+                      <div class="avatar">
+                        <div class="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://res.cloudinary.com/enchanting/q_70,f_auto,w_1024,h_683,c_fit/quark-web/2024/09/SamEdmonds20-20Adelie20closeup202.jpg"
+                            alt="Avatar Tailwind CSS Component" />
+                        </div>
+                      </div>
+                      <div>
+                        <div class="font-bold">{{friend.user.username}}</div>
+                        <div class="text-sm opacity-50">United States</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    bla bla bla
+                    <br />
+                    <span class="badge badge-ghost badge-sm">bla bla bla</span>
+                  </td>
+                  <td>Purple</td>
+                  <th>
+                    <button class="bg-base-300 btn btn-ghost btn-xs">view profile</button>
+                  </th>
+                </tr>
+                {% endfor %}
+              </tbody>
+              
+            </table>
+            {% else %}
+                    <p class="text-center text-base-content col-span-full">You have no friends yet.</p>
+            {% endif %}
+          </div>
+        </div>
+    </div>
 
     <!-- Streak and Questions Section -->
     <div class="container mx-auto mt-8 px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-6">

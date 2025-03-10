@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm
+from .forms import SignupForm, LoginForm, AddFriendForm
+from .models import CustomUser, FriendRequest
+from django.contrib import messages
 from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
@@ -47,12 +49,108 @@ def login(request):
         form = LoginForm()
     return render(request, "login.html", {"form": form})
 
+#@login_required()
+#def profile(request):
+#    user = request.user
+#    numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
+#    numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
+#    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
+
 @login_required()
 def profile(request):
+    if request.method == "POST":
+        clear_messages(request)
+        form = AddFriendForm(request.POST)
+        if form.is_valid():
+            friend_email = form.cleaned_data["friend_email"]
+
+            # Prevent sending request to self
+            if friend_email == request.user.email:
+                messages.error(request, "You cannot send a friend request to yourself.")
+                print("CANT SEND TO YOUR SELF")
+                return redirect("profile")
+
+            try:
+                friend_user = CustomUser.objects.get(email=friend_email)
+            except CustomUser.DoesNotExist:
+                messages.error(request, "No user found with that email.")
+                return redirect("profile")
+
+            # Check if already friends
+            user = request.user
+            friend_user
+            if friend_user in user.friends.all():
+                messages.info(request, "You are already friends.")
+                return redirect("profile")
+
+            # Check for an existing pending request
+            if FriendRequest.objects.filter(
+                    from_user=user, to_user=friend_user, status="pending"
+                ).exists():
+                messages.info(request, "Friend request already sent.")
+                return redirect("profile")
+
+            # Create and save the friend request
+            FriendRequest.objects.create(from_user=user, to_user=friend_user)
+            messages.success(request, "Friend request sent!")
+            return redirect("profile")
+    else:
+        form = AddFriendForm()
+
     user = request.user
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
-    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
+    try:
+    # Fetch tags with positive qualityPoints
+        positive_tags = user.tag_stats.filter(qualityPoints__gt=0).count.all()
+
+    # Fetch tags with negative qualityPoints
+        negative_tags = user.tag_stats.filter(qualityPoints__lt=0).all()
+
+    except AttributeError as e:
+        print(f"AttributeError: {e}. Ensure 'user' has a valid related tag stats.")
+        positive_tags = []
+        negative_tags = []
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        positive_tags = []
+        negative_tags = []
+
+    return render(request,
+                    "profile.html",
+                        {  "user": user,
+                        "numberOfExcelledQuestions": numberOfExcelledQuestions,
+                        "numberOfStruggledQuestions": numberOfStruggledQuestions,
+                        "positive_tags": positive_tags,
+                        "negative_tags": negative_tags,
+                         "form": form }) 
+
+def clear_messages(request):
+    # Clears the messages
+    list(messages.get_messages(request))
+
+
+@login_required
+def respond_friend_request(request, request_id, response):
+    try:
+        friend_request = FriendRequest.objects.get(id=request_id, to_user=request.user, status="pending")
+    except FriendRequest.DoesNotExist:
+        messages.error(request, "Friend request not found.")
+        return redirect("profile")
+
+    if response == "accept":
+        # Add each other as friends
+        request.user.friends.add(friend_request.from_user)
+        friend_request.from_user.friends.add(request.user)
+        friend_request.delete()
+        messages.success(request, "Friend request accepted!")
+    elif response == "reject":
+        friend_request.delete()
+        messages.info(request, "Friend request rejected.")
+    else:
+        messages.error(request, "Invalid response.")
+    
+    return redirect("profile")
 
 def settings(request):
     pass
