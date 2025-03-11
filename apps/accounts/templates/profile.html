@@ -70,17 +70,7 @@
         </div>
     </div>
     
-
-    <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
-        {% if form %}
-            <h2>Send a Friend Request</h2>
-            <form action="{% url 'profile' %}" method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Send Request</button>
-            </form>
-        {% endif %}
-        
+       
         {% if messages %}
   <div class="messages">
     {% for message in messages %}
@@ -90,7 +80,6 @@
     {% endfor %}
   </div>
 {% endif %}
-    </div>
 
     <div class="card bg-base-200 shadow-lg rounded-lg p-6 mt-8">
         <h2 class="text-2xl font-bold text-base-content mb-4">Incoming Friend Requests</h2>
@@ -117,35 +106,39 @@
         {% endif %}
       </div>
 
-      <div class="container mx-auto mt-8 px-4 md:px-8">
-        <div class="card bg-base-200 shadow-lg rounded-lg p-6">
-            <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {% if user.profile.friends.all %}
-                    {% for friend in user.profile.friends.all %}
-                    <!-- Friend Card -->
-                    <div class="card bg-base-100 shadow-md rounded-lg p-4 text-center">
-                        <div class="avatar mb-3 mx-auto">
-                            <div class="w-16 h-16 rounded-full">
-                                <img src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg" alt="Friend Avatar">
-                            </div>
-                        </div>
-                        <p class="text-lg font-bold text-base-content">{{ friend.user.username }}</p>
-                        <a href="#" class="text-sm text-primary underline">View Profile</a>
-                    </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="text-center text-base-content col-span-full">You have no friends yet.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+
 
     <div class="container mx-auto mt-8 px-4 md:px-8">
         <div class="card bg-base-200 shadow-lg rounded-lg p-6">
         <div class="overflow-y-auto max-h-[40vh]">
             <h2 class="text-2xl font-bold text-base-content mb-4">Your Friends 2nd style</h2>
-            {% if user.profile.friends.all %}
+            <button class="btn" popovertarget="friend_request" style="anchor-name:--anchor-1">
+                Add Friend
+              </button>
+              <div class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+                popover id="friend_request" style="position-anchor:--anchor-1">
+                
+                    {% if form %}
+                        <h2>Send a Friend Request</h2>
+                        <form id="add-friend-form" action="{% url 'profile' %}" method="POST">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button id="submit" type="submit" value="Submit" class="btn btn-primary">Send Request</button>
+                        </form>
+                    {% endif %}
+                    
+                    {% if messages %}
+              <div class="messages">
+                {% for message in messages %}
+                  <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+                
+            </div>
+            {% if user.friends.all %}
             <table class="table">
               <!-- head -->
               <thead>
@@ -162,7 +155,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for friend in user.profile.friends.all %}
+                {% for friend in user.friends.all %}
                 <!-- row 1 -->
                 <tr>
                   <th>
@@ -180,7 +173,7 @@
                         </div>
                       </div>
                       <div>
-                        <div class="font-bold">{{friend.user.username}}</div>
+                        <div class="font-bold">{{friend.username}}</div>
                         <div class="text-sm opacity-50">United States</div>
                       </div>
                     </div>
@@ -287,6 +280,30 @@
     </div>
 </div>
 
-        
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var form = document.getElementById('add-friend-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(form);
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('x-requested-with', 'XMLHttpRequest');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        alert('Friend request sent!');
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                } else {
+                    alert('An error occurred while submitting the form.');
+                }
+            };
+            xhr.send(formData);
+        });
+    });
+</script>
 
 {% endblock %}

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
 from django.db import IntegrityError
+from django.http import JsonResponse
 
 def signup(request):
     #TODO: Cleanup
@@ -63,9 +64,12 @@ def profile(request):
         form = AddFriendForm(request.POST)
         if form.is_valid():
             friend_email = form.cleaned_data["friend_email"]
-
+            print("DEBUGGGG")
+            print(request.headers.get('x-requested-with'))
             # Prevent sending request to self
             if friend_email == request.user.email:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': "You cannot send a friend request to yourself."})
                 messages.error(request, "You cannot send a friend request to yourself.")
                 print("CANT SEND TO YOUR SELF")
                 return redirect("profile")
@@ -73,6 +77,9 @@ def profile(request):
             try:
                 friend_user = CustomUser.objects.get(email=friend_email)
             except CustomUser.DoesNotExist:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': "No user found with that email."})
+                messages.error(request, "No user found with that email.")
                 messages.error(request, "No user found with that email.")
                 return redirect("profile")
 
@@ -80,6 +87,8 @@ def profile(request):
             user = request.user
             friend_user
             if friend_user in user.friends.all():
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': "You are already friends."})
                 messages.info(request, "You are already friends.")
                 return redirect("profile")
 
@@ -87,11 +96,15 @@ def profile(request):
             if FriendRequest.objects.filter(
                     from_user=user, to_user=friend_user, status="pending"
                 ).exists():
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': "Friend request already sent."})
                 messages.info(request, "Friend request already sent.")
                 return redirect("profile")
 
             # Create and save the friend request
             FriendRequest.objects.create(from_user=user, to_user=friend_user)
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                return JsonResponse({'success': True})
             messages.success(request, "Friend request sent!")
             return redirect("profile")
     else:
