@@ -12,23 +12,7 @@
       <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
     </svg>    
   </button>
-  <dialog id="usergroup_settings_modal" class="modal">
-    <div class="modal-box">
-      <!-- Modal Close Button -->
-      <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('usergroup_settings_modal').close()">✕</button>
-  
-      <h3 class="text-lg font-bold">Group Settings</h3>
-  
-      <!-- Single Form -->
-      <form method="POST">
-        {% csrf_token %}
-        {{ form }}
-        <div class="modal-action">
-          <button type="submit" class="btn">Submit</button>
-        </div>
-      </form>
-    </div>
-  </dialog>  
+  {% include 'group_settings_modal.html' %}
 </div>
 
 <!-- Using flex to manage layout -->
@@ -50,7 +34,7 @@
         <div class="flex flex-row">
           <button class="btn btn-outline btn-primary btn-xs flex">Invite</button>
           <!-- TODO: Form looks like it added some padding -->
-           <button hx-get="./refresh" 
+           <button hx-get="{% url 'refresh_group_data' group.invite_code %}" 
                    hx-target="#group-table"
                    hx-swap="OuterHTML"
                    class="ml-5">
@@ -68,12 +52,84 @@
     
     <!-- Second Box -->
     <div class="border-solid rounded-md border-2 overflow-auto p-5 ml-2.5 mr-5 mt-5">
-      <pre><code>language="javascript">
-        function example() {
-            console.log("Hello World");
+        <div id="editor-container" code-content="{{ solution.code }}" style="width: 100%; height: 400px;"></div>
+      
+      <!-- Hidden div with HTMX attributes for autosave -->
+      <div id="autosave-trigger" 
+        hx-post="./save_solution/"
+        hx-target="#save-status"
+        hx-swap="outerHTML"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        hx-trigger="autosave-event from:body"
+        style="display:none;">
+      </div>
+      <div id="save-status" class="text-sm text-gray-500 mt-2">Changes saved automatically</div>
+      {% endblock %}
+      
+      {% block extra_scripts %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+      <script>
+        let editor;
+        let saveTimeout;
+        const AUTOSAVE_DELAY = 1000; // 1 second delay after typing stops
+        let code_content = document.getElementById('editor-container').getAttribute('code-content');
+        console.log(code_content);
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+          // Create and store the editor instance
+          editor = monaco.editor.create(document.getElementById('editor-container'), {
+            value: code_content,
+            language: 'python',
+            theme: 'vs-light',
+            minimap: { enabled: false },
+            automaticLayout: true,
+            fontSize: 14,
+            lineNumbers: 'off',
+            scrollBeyondLastLine: false,
+            suggestOnTriggerCharacters: false,
+            quickSuggestions: false,
+            renderLineHighlight: 'none',
+            hideCursorInOverviewRuler: true,
+            overviewRulerLanes: 0,
+            overviewRulerBorder: false,
+            scrollbar: {
+              vertical: 'visible',
+              horizontal: 'visible',
+              useShadows: false,
+              verticalHasArrows: false,
+              horizontalHasArrows: false,
+              verticalScrollbarSize: 10,
+              horizontalScrollbarSize: 10
+            }
+          });
+          
+          // Add change event listener for autosave
+          editor.onDidChangeModelContent(() => {
+            // Show "Saving..." status
+            document.getElementById('save-status').innerHTML = 'Saving...';
+            
+            // Clear previous timeout if it exists
+            if (saveTimeout) {
+              clearTimeout(saveTimeout);
+            }
+            
+            // Set a new timeout to trigger save after user stops typing
+            saveTimeout = setTimeout(() => {
+              triggerAutosave();
+            }, AUTOSAVE_DELAY);
+          });
+          
+          // Configure the HTMX request to include editor content
+          document.getElementById('autosave-trigger').addEventListener('htmx:configRequest', function(event) {
+            const content = editor.getValue();
+            event.detail.parameters.content = content;
+          });
+        });
+        
+        // Function to trigger the HTMX autosave
+        function triggerAutosave() {
+          // Dispatch a custom event that HTMX is listening for
+          document.body.dispatchEvent(new CustomEvent('autosave-event'));
         }
-        </code>
-    </div>
-  </div>
-</div>
-{% endblock %}
+      </script>
+      {% endblock %}

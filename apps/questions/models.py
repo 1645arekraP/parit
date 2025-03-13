@@ -42,28 +42,29 @@ class Solution(models.Model):
     memory = models.CharField(default=-1, blank=True, max_length=12)
     runtime = models.CharField(default=-1, blank=True, max_length=12)
     status = models.CharField(choices=STATUS_CHOICES, default='has_not_started', max_length=28)
-    last_updated = models.CharField(default=str(float('inf')), max_length=250)
+    last_updated = models.CharField(default=str(-float('inf')), max_length=250)
     attempts = models.IntegerField(default=0)
+    code = models.TextField(default="User has not submitted any code yet", max_length=10000)
 
     @classmethod
     def create_from_leetcode(cls, question, user, solution_object):
-        #TODO: Find a better way of setting this
-        choice = 'In Progress'
-        if solution_object.status=='Accepted':
-            choice = 'Accepted'
+        solution, created = cls.objects.get_or_create(question=question, user=user)
 
-        defaults = {
+        # If the solution is older than the last updated solution, return
+        if int(solution_object.timestamp) < int(solution.last_updated):
+            return     
+        status = 'Accepted' if solution_object.status=='Accepted' else 'In Progress'
+        fields_to_update = {
+            'attempts': solution.attempts + 1,
             'memory': solution_object.memory,
             'runtime': solution_object.runtime,
             'last_updated': solution_object.timestamp,
-            'status': choice
+            'status': status
         }
-        
-        return cls.objects.update_or_create(
-            question=question,
-            user=user,
-            defaults=defaults
-        )
+        for field, value in fields_to_update.items():
+            setattr(solution, field, value)
+        solution.save()
+        return solution
 
     class Meta:
         unique_together = ("user", "question")

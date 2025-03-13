@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
+from apps.groups.forms import CreateGroupForm
+from apps.groups.services.group_service import create_group
 from django.db import IntegrityError
 from django.http import JsonResponse
 
@@ -111,32 +113,22 @@ def profile(request):
         form = AddFriendForm()
 
     user = request.user
+    if request.method == "POST":
+        form = CreateGroupForm(request.POST, user=user)
+        if form.is_valid():
+            form.save()
+            return redirect("/accounts/profile/")
+    else:
+        form = CreateGroupForm(user=user)
+
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
-    try:
-    # Fetch tags with positive qualityPoints
-        positive_tags = user.tag_stats.filter(qualityPoints__gt=0).count.all()
-
-    # Fetch tags with negative qualityPoints
-        negative_tags = user.tag_stats.filter(qualityPoints__lt=0).all()
-
-    except AttributeError as e:
-        print(f"AttributeError: {e}. Ensure 'user' has a valid related tag stats.")
-        positive_tags = []
-        negative_tags = []
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        positive_tags = []
-        negative_tags = []
-
-    return render(request,
-                    "profile.html",
-                        {  "user": user,
+    context = {  "user": user,
                         "numberOfExcelledQuestions": numberOfExcelledQuestions,
                         "numberOfStruggledQuestions": numberOfStruggledQuestions,
-                        "positive_tags": positive_tags,
-                        "negative_tags": negative_tags,
-                         "form": form }) 
+                        "group_settings_form": CreateGroupForm(user=user)
+                         "form": form }
+    return render(request, "profile.html", context)
 
 def clear_messages(request):
     # Clears the messages
@@ -168,6 +160,8 @@ def respond_friend_request(request, request_id, response):
 def settings(request):
     pass
 
+#TODO: Pull out all group logic from profile and put it into the groups app and set up views
+# that return the html partials for that view
 @login_required()
 def logout_view(request):
     logout(request)
