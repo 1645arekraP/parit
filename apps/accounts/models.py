@@ -57,3 +57,31 @@ class CustomUser(AbstractUser):
         
         numAcceptedSolution = self.solutions.filter(accepted=True).count()
         return (numAcceptedSolution/numberOfSolutions) * 100
+    
+class FriendRequest(models.Model):
+    from_user = models.ForeignKey(
+        CustomUser, 
+        related_name="friend_requests_sent", 
+        on_delete=models.CASCADE
+    )
+    to_user = models.ForeignKey(
+        CustomUser, 
+        related_name="friend_requests_received", 
+        on_delete=models.CASCADE
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=10,
+        choices=[
+            ("pending", "Pending"),
+            ("accepted", "Accepted"),
+            ("rejected", "Rejected")
+        ],
+        default="pending"
+    )
+
+    class Meta:
+        unique_together = ("from_user", "to_user")
+
+    def __str__(self):
+        return f"Friend request from {self.from_user.email} to {self.to_user.email} ({self.status})"

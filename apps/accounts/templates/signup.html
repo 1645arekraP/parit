@@ -1,8 +1,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form class="border flex flex-col justify-center items-center " action="" method="post">
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <form  class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box shadow text-center" action="" method="post" >
         {% csrf_token %}
+        <h1 class="mb-3">Sign Up</h1>
+        <div>
+          {{form.email}}
+          <div class="validator-hint hidden">Enter valid email address</div>
+        </div>
+        <div>
+        {{form.username}}
+        <p class="validator-hint hidden">
+          Must be 3 to 30 characters
+          <br/>containing only letters, numbers or dash
+        </p>
+      </div>
+        
+      <div>
+        {{form.password1}}
+        <p class="validator-hint hidden">
+          Must be more than 8 characters, including
+          <br/>At least one number
+          <br/>At least one lowercase letter
+          <br/>At least one uppercase letter
+        </p>
+      </div>
+        <div>
+        {{form.password2}}
+        <p class="validator-hint hidden">
+          Passwords must match
+        </p>
+      </div>
+        <input type="submit" value="Submit" class="btn">
+
+        <!--
         <label class="input input-bordered flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -54,5 +86,17 @@
             {{form.password2}}
         </label>
         <input type="submit" value="Submit" class="btn">
+    -->
     </form>
+  </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var password1 = document.querySelector('input[name="password1"]');
+          var password2 = document.querySelector('input[name="password2"]');
+
+          password1.addEventListener('input', function() {
+              password2.setAttribute('pattern', password1.value);
+          });
+      });
+  </script>
 {% endblock %}
