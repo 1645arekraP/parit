@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login as dlogin
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
+from apps.groups.forms import CreateGroupForm
+from apps.groups.services.group_service import create_group
 
 def signup(request):
     #TODO: Cleanup
@@ -43,9 +45,26 @@ def login(request):
 @login_required()
 def profile(request):
     user = request.user
+    if request.method == "POST":
+        form = CreateGroupForm(request.POST, user=user)
+        if form.is_valid():
+            form.save()
+            return redirect("/accounts/profile/")
+    else:
+        form = CreateGroupForm(user=user)
+
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
-    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
+    context = {
+        "user": user,
+        "numberOfExcelledQuestions": numberOfExcelledQuestions,
+        "numberOfStruggledQuestions": numberOfStruggledQuestions,
+        "group_settings_form": CreateGroupForm(user=user),
+    }
+    return render(request, "profile.html", context)
 
 def settings(request):
     pass
+
+#TODO: Pull out all group logic from profile and put it into the groups app and set up views
+# that return the html partials for that view
