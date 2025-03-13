@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
+
 {% load static %}
 {% block content %}
-
 <div class="flex w-full justify-center py-5">
   {{ group.group_name }}
   <!-- You can open the modal using ID.showModal() method -->
@@ -64,8 +64,8 @@
         style="display:none;">
       </div>
       <div id="save-status" class="text-sm text-gray-500 mt-2">Changes saved automatically</div>
+    </div>
       {% endblock %}
-      
       {% block extra_scripts %}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
       <script>

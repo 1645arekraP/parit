@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.questions',
     'apps.studio',
-    'django_celery_beat',
+    #'django_celery_beat',
 ]
 
 MIDDLEWARE = [

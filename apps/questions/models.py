@@ -48,10 +48,14 @@ class Solution(models.Model):
 
     @classmethod
     def create_from_leetcode(cls, question, user, solution_object):
+        """
+        Create a solution from a leetcode solution object. If no solution exists, a new one is created.
+        Only the lastest solution is kept.
+        """
         solution, created = cls.objects.get_or_create(question=question, user=user)
 
         # If the solution is older than the last updated solution, return
-        if int(solution_object.timestamp) < int(solution.last_updated):
+        if float(solution_object.timestamp) < float(solution.last_updated):
             return     
         status = 'Accepted' if solution_object.status=='Accepted' else 'In Progress'
         fields_to_update = {

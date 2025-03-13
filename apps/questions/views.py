@@ -8,11 +8,14 @@ from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrap
 
 
 @login_required
-def solution(request, question_slug, username):
-    print("Going off")
+def update_question_solution(request, question_slug, username):
+    """
+    This should update the solution for a question using the leetcode wrapper.
+    """
+    print("Updating solution")
     if request.method == "GET":
         user = CustomUser.objects.get(username=username)
         question = Question.objects.get(title_slug=question_slug)
         solution = Solution.objects.get(user=user, question=question)
-        return render(request, 'partials/solution_modal.html', {'solution': solution, 'username': user.username})
-    return JsonResponse({'Status': 'Failed!'})
+        
+    return render(request, 'partials/solution_modal.html', {'solution': solution, 'username': user.username})

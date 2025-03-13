@@ -6,7 +6,8 @@ from .models import StudyGroup
 from apps.questions.models import Solution
 from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from .decorators import owner_required, admin_required, belongs_to_group
-from .services.group_service import leave_group as service_leave_group, update_solution_code
+from .services.group_service import leave_group as service_leave_group
+from apps.questions.services.solution_services import update_solution_from_leetcode
 import asyncio
 import json
 
@@ -31,21 +32,11 @@ def refresh_group_data(request, invite_code):
     user = request.user
     group = StudyGroup.objects.get(invite_code=invite_code)
     
-    if request.method != "GET":
-        return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': solutions})
-
-    lcw = LeetcodeWrapper()
-    group = StudyGroup.objects.get(invite_code=invite_code)
-    question = group.question
+    #if request.method != "GET":
+    #    return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': solutions})
+    
     for member in group.members.all():
-        print(member.leetcode_username)
-        solutions = asyncio.run(lcw.get_recent_solutions(member.leetcode_username))
-        print(solutions)
-        for solution in solutions.solutions:
-            print(solution.title_slug)
-            if solution.title_slug == question.title_slug:
-                 print("Found solution")
-                 Solution.create_from_leetcode(question, user, solution) # This can be switched to update
+        update_solution_from_leetcode(member, group.question)
     group_data = group.get_member_solutions()
     return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': group_data})
 
@@ -54,15 +45,6 @@ def group_settings(request, invite_code):
     group = StudyGroup.objects.get(invite_code=invite_code)
     return render(request, 'partials/group_settings.html', {'group': group})
 
-@owner_required
-def delete_group(request, invite_code):
-    #TODO: This gotta be validated
-    group = StudyGroup.objects.get(invite_code=invite_code)
-    try:
-        group.delete()
-        return redirect("profile")
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
     
 @belongs_to_group
 def leave_group(request, invite_code):
@@ -74,5 +56,7 @@ def leave_group(request, invite_code):
 def save_solution(request, invite_code):
     content = request.POST.get('content')
     group = StudyGroup.objects.get(invite_code=invite_code)
-    update_solution_code(group, request.user, content)
-    return render(request, 'partials/test.html')
+    solution = Solution.objects.get(user=request.user, question=group.question)
+    solution.code = content
+    solution.save()
+    return render(request, 'partials/test.html', {'solution': solution})

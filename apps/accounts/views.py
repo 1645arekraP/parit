@@ -59,6 +59,7 @@ def login(request):
 #    numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
 #    return render(request, "profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })
 
+# TODO: Clean up
 @login_required()
 def profile(request):
     if request.method == "POST":
@@ -118,16 +119,17 @@ def profile(request):
         if form.is_valid():
             form.save()
             return redirect("/accounts/profile/")
-    else:
         form = CreateGroupForm(user=user)
 
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
-    context = {  "user": user,
-                        "numberOfExcelledQuestions": numberOfExcelledQuestions,
-                        "numberOfStruggledQuestions": numberOfStruggledQuestions,
-                        "group_settings_form": CreateGroupForm(user=user)
-                         "form": form }
+    context = {
+        "user": user,
+        "numberOfExcelledQuestions": numberOfExcelledQuestions,
+        "numberOfStruggledQuestions": numberOfStruggledQuestions,
+        "group_settings_form": CreateGroupForm(user=user),
+        "form": form 
+    }
     return render(request, "profile.html", context)
 
 def clear_messages(request):
