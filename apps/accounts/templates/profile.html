@@ -63,8 +63,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if user.study_groups.all %}
-                            {% for membership in user.studygroupmembership_set.all %}
+                        {% if user.study_group.all %}
+                            {% for membership in user.StudyGroupMembership_set.all %}
                             <tr>
                                 <td class="text-gray-800">{{ membership.study_group.group_name }}</td>
                                 <td class="text-gray-600">{{ membership.study_group.members.count }}</td>
@@ -203,11 +203,11 @@
                     </div>
                   </td>
                   <td>
-                    bla bla bla
+                    PLACEHOLDER
                     <br />
-                    <span class="badge badge-ghost badge-sm">bla bla bla</span>
+                    <span class="badge badge-ghost badge-sm">placeholder</span>
                   </td>
-                  <td>Purple</td>
+                  <td>placeholder</td>
                   <th>
                     <button class="bg-base-300 btn btn-ghost btn-xs">view profile</button>
                   </th>
