@@ -2,6 +2,7 @@
 
 {% load static %}
 {% block content %}
+<section hx-ext="ws" ws-connect="/ws/group/{{ group.invite_code }}/">
 <div class="flex w-full justify-center py-5">
   {{ group.group_name }}
   <!-- You can open the modal using ID.showModal() method -->
@@ -14,7 +15,6 @@
   </button>
   {% include 'group_settings_modal.html' %}
 </div>
-
 <!-- Using flex to manage layout -->
 <div class="flex w-full h-[calc(100vh-10rem)]">
   <!-- Left Column (50% of the width) -->
@@ -45,7 +45,7 @@
         </form>
         </div>
       </div>
-      <div id="group-table">
+      <div id="group-table" hx-swap-oob="morphdom">
         {% include 'partials/members_table.html' %}
       </div>
     </div>
@@ -68,6 +68,24 @@
       {% endblock %}
       {% block extra_scripts %}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+      <script>
+        // Add these to your HTML file
+        document.addEventListener('htmx:wsConnecting', (event) => {
+            console.log('Connecting to WebSocket...');
+        });
+        document.addEventListener('htmx:wsOpen', (event) => {
+            console.log('WebSocket connected!');
+        });
+        document.addEventListener('htmx:wsError', (event) => {
+            console.log('WebSocket error:', event.detail.error);
+        });
+        document.addEventListener('htmx:wsBeforeMessage', (event) => {
+            console.log('Message incoming:', event.detail.message);
+        });
+        document.addEventListener('htmx:wsAfterMessage', (event) => {
+            console.log('Message processed:', event.detail.message);
+        });
+      </script>
       <script>
         let editor;
         let saveTimeout;
@@ -133,3 +151,4 @@
         }
       </script>
       {% endblock %}
+    </section>

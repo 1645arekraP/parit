@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login as dlogin, logout
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
-from apps.groups.forms import CreateGroupForm
+from apps.groups.forms import CreateGroupForm, GroupSettingsForm
 from apps.groups.services.group_service import create_group
 from django.db import IntegrityError
 from django.http import JsonResponse
@@ -115,11 +115,11 @@ def profile(request):
 
     user = request.user
     if request.method == "POST":
-        form = CreateGroupForm(request.POST, user=user)
-        if form.is_valid():
-            form.save()
+        create_group_form = CreateGroupForm(request.POST, user=user)
+        if create_group_form.is_valid():
+            create_group_form.save()
             return redirect("/accounts/profile/")
-        form = CreateGroupForm(user=user)
+    create_group_form = CreateGroupForm(user=user)
 
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
@@ -127,7 +127,7 @@ def profile(request):
         "user": user,
         "numberOfExcelledQuestions": numberOfExcelledQuestions,
         "numberOfStruggledQuestions": numberOfStruggledQuestions,
-        "group_settings_form": CreateGroupForm(user=user),
+        "create_group_form": create_group_form,
         "form": form 
     }
     return render(request, "profile.html", context)

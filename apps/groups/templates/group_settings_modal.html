@@ -1,14 +1,15 @@
+<!-- This is a modal to be used to edit the group settings from the groups list on the profile page.-->
 <dialog id="usergroup_settings_modal" class="modal">
     <div class="modal-box">
       <!-- Modal Close Button -->
       <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('usergroup_settings_modal').close()">✕</button>
   
-      <h3 class="text-lg font-bold">Group Settings</h3>
+      <h3 class="text-lg font-bold">Edit Group Settings</h3>
   
       <!-- Single Form -->
       <form method="POST">
         {% csrf_token %}
-        {{ form }}
+        {{ group_settings_form }}
         <div class="modal-action">
           <button type="submit" class="btn">Submit</button>
         </div>
