@@ -26,6 +26,12 @@ class GroupSettingsForm(forms.ModelForm):
         self.fields['invite_code'].initial = self.instance.invite_code
 
 class CreateGroupForm(forms.Form):
+    form_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={
+            'class': 'input',
+            'value': 'create_group'
+        })
+    )
     group_name = forms.CharField(
         help_text='Give your study group a name'
     )

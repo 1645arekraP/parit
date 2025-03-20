@@ -86,6 +86,12 @@ class LoginForm(forms.Form):
         return cleaned_data
     
 class AddFriendForm(forms.Form):
+    form_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={
+            'class': 'input',
+            'value': 'add_friend'
+        })
+    )
     friend_email = forms.EmailField(
         label="Friend's Email",
         widget=forms.EmailInput(attrs={

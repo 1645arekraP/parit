@@ -63,7 +63,7 @@ def login(request):
 @login_required()
 def profile(request):
     if request.method == "POST":
-        if request.POST.get("action") == "add_friend":
+        if request.POST.get("form_id") == "add_friend":
             clear_messages(request)
             form = AddFriendForm(request.POST)
             if form.is_valid():
@@ -111,7 +111,7 @@ def profile(request):
                     return JsonResponse({'success': True})
                 messages.success(request, "Friend request sent!")
                 return redirect("profile")
-        elif request.POST.get("action") == "create_group":
+        elif request.POST.get("form_id") == "create_group":
             form = CreateGroupForm(request.POST, user=user)
             if form.is_valid():
                 form.save()
