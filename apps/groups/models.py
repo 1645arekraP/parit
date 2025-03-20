@@ -123,4 +123,4 @@ class StudyGroupMembership(models.Model):
         unique_together = ('study_group', 'user')
 
     def __str__(self):
-        return f"{self.user.username} ({self.role}) - {self.study_group.group_name}"""
+        return f"{self.user.username} ({self.role}) - {self.study_group.group_name}"

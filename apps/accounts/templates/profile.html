@@ -142,11 +142,11 @@
               <div class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
                 popover id="friend_request" style="position-anchor:--anchor-1">
                 
-                    {% if form %}
+                    {% if friend_form %}
                         <h2>Send a Friend Request</h2>
                         <form id="add-friend-form" action="{% url 'profile' %}" method="POST">
                             {% csrf_token %}
-                            {{ form.as_p }}
+                            {{ friend_form.as_p }}
                             <button id="submit" type="submit" value="Submit" class="btn btn-primary">Send Request</button>
                         </form>
                     {% endif %}
