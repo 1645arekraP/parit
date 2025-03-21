@@ -59,4 +59,5 @@ class CreateGroupForm(forms.Form):
             question_pool_type=self.cleaned_data['question_pool_type'],
             initial_members=self.cleaned_data.get('initial_members')
         )
+        print(f"DEBUG: Group created with ID: {group.id} and Name: {group.group_name}")
         return group

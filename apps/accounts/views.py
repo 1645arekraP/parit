@@ -62,13 +62,13 @@ def login(request):
 # TODO: Clean up
 @login_required()
 def profile(request):
+    user = request.user
     if request.method == "POST":
         if request.POST.get("form_id") == "add_friend":
             clear_messages(request)
             form = AddFriendForm(request.POST)
             if form.is_valid():
                 friend_email = form.cleaned_data["friend_email"]
-                print("DEBUGGGG")
                 print(request.headers.get('x-requested-with'))
                 # Prevent sending request to self
                 if friend_email == request.user.email:
@@ -130,6 +130,7 @@ def profile(request):
         "friend_form": friend_form ,
         "group_form": group_form
     }
+    print(user.study_groups.all())
     return render(request, "profile.html", context)
 
 def clear_messages(request):
@@ -159,8 +160,9 @@ def respond_friend_request(request, request_id, response):
     
     return redirect("profile")
 
+@login_required
 def settings(request):
-    pass
+    return render(request, "settings.html")
 
 #TODO: Pull out all group logic from profile and put it into the groups app and set up views
 # that return the html partials for that view

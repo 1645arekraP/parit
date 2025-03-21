@@ -63,8 +63,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% if user.study_group.all %}
-                            {% for membership in user.StudyGroupMembership_set.all %}
+                        {% if user.study_groups.all %}
+                          {% for membership in user.studygroupmembership_set.all %}
                             <tr>
                                 <td class="text-gray-800">{{ membership.study_group.group_name }}</td>
                                 <td class="text-gray-600">{{ membership.study_group.members.count }}</td>
