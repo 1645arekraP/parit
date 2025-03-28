@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm, AddFriendForm
+from .forms import SignupForm, LoginForm, AddFriendForm, SettingsForm, ChangePasswordForm
 from .models import CustomUser, FriendRequest
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as dlogin, logout
+from django.contrib.auth import authenticate, login as dlogin, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
@@ -162,7 +162,46 @@ def respond_friend_request(request, request_id, response):
 
 @login_required
 def settings(request):
-    return render(request, "settings.html")
+    clear_messages(request)
+    user = request.user
+
+    if request.method == "POST":
+        print("POST request received for settings")
+        print(request.POST)
+        form = SettingsForm(request.POST, instance=user)
+        print(form.is_valid())
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Settings updated successfully!")
+            print("Settings updated successfully!")
+            return redirect("settings")
+        else:
+            messages.error(request, "Error updating settings.")
+    else:
+        form = SettingsForm(instance=user)
+
+    return render(request, "settings.html", {"form": form})
+
+@login_required
+def change_password(request):
+    clear_messages(request)
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data["old_password"]
+            new_password = form.cleaned_data["new_password1"]
+            user = authenticate(username=request.user.username, password=old_password)
+            if user is not None:
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password changed successfully!")
+                return redirect("settings")
+            else:
+                messages.error(request, "Current password is incorrect.")
+    else:
+        form = ChangePasswordForm()
+    return render(request, "change_password.html", {"form": form})
 
 #TODO: Pull out all group logic from profile and put it into the groups app and set up views
 # that return the html partials for that view
@@ -170,3 +209,4 @@ def settings(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+

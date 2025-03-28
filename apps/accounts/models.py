@@ -7,10 +7,12 @@ from datetime import timedelta
 
 class CustomUser(AbstractUser):
     # Basic user info
-    first_name = None
-    last_name = None
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
     email = models.EmailField(_('email address'), blank=False)
     friends = models.ManyToManyField("self", blank=True, symmetrical=True)
+    newsletter = models.BooleanField(default=False, help_text='Subscribe to our newsletter')
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
 
     # Leetcode 
     leetcode_username = models.CharField(

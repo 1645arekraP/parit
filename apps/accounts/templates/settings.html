@@ -2,5 +2,31 @@
 
 {% block content %}
 {% csrf_token %}
- <p> settings </p>
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <form  class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box shadow text-center" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1 class="mb-3">Settings</h1>
+        <div>
+            {{form.first_name}}
+          </div>
+          <div>
+            {{form.last_name}}
+          </div>
+        <div>
+          {{form.email}}
+        </div>
+        
+      <div>
+        {{form.newsletter}}
+      </div>
+        <div>
+        {{form.profile_picture}}
+      </div>
+      <div>
+        {{form.leetcode_username}}
+      </div>
+        <input type="submit" value="Submit" class="btn">
+    </form>
+    <a href="{% url 'change_password' %}" class="btn btn-secondary mt-4">Change Password</a>
+  </div>
 {% endblock %}
