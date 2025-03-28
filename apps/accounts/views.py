@@ -160,6 +160,7 @@ def respond_friend_request(request, request_id, response):
     
     return redirect("profile")
 
+#TODO: image upload still not working
 @login_required
 def settings(request):
     clear_messages(request)

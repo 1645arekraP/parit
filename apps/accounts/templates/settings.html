@@ -7,26 +7,36 @@
         {% csrf_token %}
         <h1 class="mb-3">Settings</h1>
         <div>
+          <div class=""> First Name:</div>
             {{form.first_name}}
           </div>
           <div>
+            <div class=""> Last Name:</div>
             {{form.last_name}}
           </div>
         <div>
+          <div class=""> Email:</div>
           {{form.email}}
+        </div>
+        <div>
+          <div class=""> LeetCode Username:</div>
+          {{form.leetcode_username}}
         </div>
         
       <div>
+        <div class=""> Subscribe to our Newsletter:</div>
         {{form.newsletter}}
       </div>
         <div>
-        {{form.profile_picture}}
+        <div class=""> Profile Picture:</div>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Pick a file</legend>
+          {{form.profile_picture}}
+          <label class="fieldset-label">Max size 2MB</label>
+        </fieldset>
       </div>
-      <div>
-        {{form.leetcode_username}}
-      </div>
-        <input type="submit" value="Submit" class="btn">
+        <input type="submit" value="Save Changes" class="btn">
+        <a href="{% url 'change_password' %}" class="btn btn-secondary mt-4">Change Password</a>
     </form>
-    <a href="{% url 'change_password' %}" class="btn btn-secondary mt-4">Change Password</a>
   </div>
 {% endblock %}

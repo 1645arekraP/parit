@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="flex flex-col gap-2">
-                <a href="#" class="btn btn-outline btn-sm">Edit Profile</a>
+                <a href="/accounts/settings" class="btn btn-outline btn-sm">Settings</a>
                 <a href="/accounts/logout" class="btn btn-error btn-sm">Logout</a>
             </div>
         </div>
@@ -103,7 +103,7 @@
       <div class="card bg-white shadow-lg rounded-lg p-6">
       <div class="tabs tabs-lift">
         <label class="tab">
-          <input type="radio" name="my_tabs_4" />
+          <input type="radio" name="my_tabs_4" checked="checked"/>
           
           Friends
         </label>
@@ -143,50 +143,50 @@
               </div>
               <table class="table">
                 <!-- head -->
-                <thead>
+                <thead class="text-center">
                   <tr>
-                    <th>
-                      <label>
-                        <input type="checkbox" class="checkbox" />
-                      </label>
-                    </th>
+                    <th></th>
                     <th>Name</th>
-                    <th>Title</th>
-                    <th>Title</th>
+                    <th>Streak</th>
+                    <th>Acceptance Rate</th>
                     <th>Profile</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-center">
                   {% if user.friends.all %}
                   {% for friend in user.friends.all %}
                   <!-- row 1 -->
                   <tr>
+                    <!--
                     <th>
                       <label>
                         <input type="checkbox" class="checkbox" />
                       </label>
                     </th>
+                  -->
                     <td>
-                      <div class="flex items-center gap-3">
-                        <div class="avatar">
-                          <div class="mask mask-squircle h-12 w-12">
-                            <img
-                              src="https://res.cloudinary.com/enchanting/q_70,f_auto,w_1024,h_683,c_fit/quark-web/2024/09/SamEdmonds20-20Adelie20closeup202.jpg"
-                              alt="Avatar Tailwind CSS Component" />
-                          </div>
-                        </div>
-                        <div>
-                          <div class="font-bold">{{friend.username}}</div>
-                          <div class="text-sm opacity-50">United States</div>
+                      <div class="avatar">
+                        <div class="mask mask-squircle h-12 w-12">
+                          <img
+                            src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
+                            alt="Avatar Tailwind CSS Component" />
                         </div>
                       </div>
                     </td>
                     <td>
-                      PLACEHOLDER
-                      <br />
-                      <span class="badge badge-ghost badge-sm">placeholder</span>
+                      <div class="flex items-center gap-3 justify-center">
+                        <div>
+                          <div class="font-bold">{{friend.username}}</div>
+                         <!-- <div class="text-sm opacity-50">United States</div>-->
+                        </div>
+                      </div>
                     </td>
-                    <td>placeholder</td>
+                    <td>
+                      {{friend.streak}}
+                      <br />
+                      <!-- <span class="badge badge-ghost badge-sm">placeholder</span> -->
+                    </td>
+                    <td>{{friend.acceptance_rate}}</td>
                     <th>
                       <button class="bg-base-300 btn btn-ghost btn-xs">view profile</button>
                     </th>
@@ -206,7 +206,7 @@
     </div>
       
         <label class="tab">
-          <input type="radio" name="my_tabs_4" checked="checked" />
+          <input type="radio" name="my_tabs_4" />
           Friend Requests
         </label>
         <div class="tab-content bg-base-100 border-base-300 p-6">

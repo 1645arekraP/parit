@@ -111,7 +111,24 @@ class SettingsForm(forms.ModelForm):
             }),
             'newsletter': forms.CheckboxInput(attrs={
                 'class': 'checkbox'
-            })
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'First Name'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'Last Name'
+            }),
+            'profile_picture': forms.ClearableFileInput(attrs={
+                'class': 'file-input',
+                'type': 'file',
+                'placeholder': 'Profile Picture'
+            }),
+            'leetcode_username': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'LeetCode Username'
+            }),
         }
 
 class ChangePasswordForm(forms.Form):
