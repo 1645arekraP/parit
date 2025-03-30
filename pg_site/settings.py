@@ -29,12 +29,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'PRODUCTION' not in os.environ
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
-# TODO: Set up allowed hosts
-FORWARDED_ALLOW_IPS = os.environ.get('FORWARDED_ALLOW_IPS')
-if FORWARDED_ALLOW_IPS:
-    ALLOWED_HOSTS.append(FORWARDED_ALLOW_IPS)
+# Some debug stuff
+print(DEBUG, ALLOWED_HOSTS)
 
 # Application definition
 
@@ -81,8 +79,6 @@ WSGI_APPLICATION = 'pg_site.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-#TODO: Update this to use PostgreSQL 
 
 #DATABASES = {
 #    'default': {
