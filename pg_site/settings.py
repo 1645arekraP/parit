@@ -32,13 +32,9 @@ DEBUG = 'PRODUCTION' not in os.environ
 ALLOWED_HOSTS = []
 
 # TODO: Set up allowed hosts
-FORWARDED_ALLOWED_IPS = os.environ.get('FORWARDED_ALLOWED_IPS')
-print(FORWARDED_ALLOWED_IPS)
-if FORWARDED_ALLOWED_IPS:
-    ALLOWED_HOSTS.append(FORWARDED_ALLOWED_IPS)
-
-print(DEBUG, ALLOWED_HOSTS)
-print(os.environ)
+FORWARDED_ALLOW_IPS = os.environ.get('FORWARDED_ALLOW_IPS')
+if FORWARDED_ALLOW_IPS:
+    ALLOWED_HOSTS.append(FORWARDED_ALLOW_IPS)
 
 # Application definition
 
