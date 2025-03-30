@@ -38,6 +38,7 @@ if FORWARDED_ALLOWED_IPS:
     ALLOWED_HOSTS.append(FORWARDED_ALLOWED_IPS)
 
 print(DEBUG, ALLOWED_HOSTS)
+print(os.environ)
 
 # Application definition
 
