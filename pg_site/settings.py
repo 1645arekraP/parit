@@ -99,6 +99,9 @@ WSGI_APPLICATION = 'pg_site.wsgi.application'
 #    )
 #}
 
+print(f"DigitalOcean integration: {os.environ.get("DATABASE_URL")}")
+print(f"Using Params: {os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_NAME')}")
+
 # Parker adding more db stuff through DigitalOcean
 DATABASES = {
     "default": dj_database_url.parse(os.environ.get("DATABASE_URL")),
