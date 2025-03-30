@@ -6,7 +6,7 @@
     <div class="hero-content">
       <div class="max-w-md">
         <h1 class="text-5xl font-bold">
-            Prepping for an interview doesn't have to be a chore
+            Prepping for an interview doesn't have to be
             <div id="typing-container" class="typing-effect"></div>
         </h1>
         <p class="py-6">
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-{% endblock %}
+
 
 <style>
     .typing-effect span:last-child {
@@ -147,6 +147,7 @@
       }
       
       // Usage
+      
       window.onload = function () {
         const element = document.querySelector('#typing-container');
         console.log(element);
@@ -159,3 +160,4 @@
         new TypingEffect(element, words);
     };
 </script>
+{% endblock %}
