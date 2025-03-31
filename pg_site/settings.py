@@ -32,7 +32,6 @@ DEBUG = 'PRODUCTION' not in os.environ
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
 # Some debug stuff
-print(DEBUG, ALLOWED_HOSTS)
 
 # Application definition
 
@@ -80,10 +79,6 @@ WSGI_APPLICATION = 'pg_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-print(os.environ)
-print(f"DigitalOcean integration: {os.getenv("DATABASE_URL")}")
-print(f"Using Params: {os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_NAME')}")
-
 #DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.postgresql',
@@ -95,7 +90,6 @@ print(f"Using Params: {os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD
 #    },
 #}
 #rit debuging deployment issues with database connection
-print(f"postgres://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_NAME')}")
 DATABASES = {
     'default': dj_database_url.config(
         default=f"postgres://{os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_NAME')}",
