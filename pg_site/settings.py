@@ -80,10 +80,9 @@ WSGI_APPLICATION = 'pg_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+print(os.environ)
 print(f"DigitalOcean integration: {os.environ.get("DATABASE_URL")}")
 print(f"Using Params: {os.getenv('POSTGRES_USER')}:{os.getenv('POSTGRES_PASSWORD')}@{os.getenv('POSTGRES_HOST')}:{os.getenv('POSTGRES_PORT')}/{os.getenv('POSTGRES_NAME')}")
-print(f"TEST: {os.environ.get("TEST")}")
-print(f"TEST2: {os.environ.get("TEST2")}")
 
 #DATABASES = {
 #    'default': {
