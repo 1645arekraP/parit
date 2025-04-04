@@ -5,6 +5,16 @@ from apps.questions.models import Question
 from apps.groups.services.group_service import create_group
 
 class GroupSettingsForm(forms.ModelForm):
+    group_name = forms.CharField(
+        max_length=30,
+        min_length=3,
+        widget=forms.TextInput(attrs={
+            'required': 'Group name is required',
+            'max_length': 'Group name must be less than 30 characters',
+            'min_length': 'Group name must be at least 3 characters',
+        })
+    )
+    
     invite_code = forms.CharField(
         required=False,  # Don't require this field to be filled out by the user
         disabled=True,   # Disable editing, so it appears read-only

@@ -54,7 +54,6 @@ class StudyGroup(models.Model):
         # TODO: This should be in a service
         self.question = self.question.get_new_question(self.question_pool_type)
         self.save()
-
     # Move this to a service
     def get_member_solutions(self) -> Dict:
         # TODO: This should be in a service
@@ -69,6 +68,7 @@ class StudyGroup(models.Model):
             )
             solutions.append((member, solution))
         return solutions
+
     
     
     @classmethod

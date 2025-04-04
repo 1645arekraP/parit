@@ -41,7 +41,7 @@
                     <h3 class="text-lg font-bold">Create a new study group!</h3>
                     <form method="POST">
                         {% csrf_token %}
-                        {{ group_settings_form }}
+                        {{ create_group_form }}
                         <button type="submit" class="btn btn-primary">Create</button>
                     </form>
                     </div>
@@ -51,7 +51,6 @@
                 </dialog>
             </div>
             <!-- TODO: This uses group object, not membership object -->
-            {% include 'group_settings_modal.html' %}
             <div class="overflow-x-auto">
                 <table class="table w-full">
                     <thead>
@@ -75,9 +74,6 @@
                                         <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
                                           <li><a href="{% url 'group' invite_code=membership.study_group.invite_code %}">View</a></li>
                                           <li><a href="{% url 'leave_group' invite_code=membership.study_group.invite_code %}">Leave</a></li>
-                                          {% if membership.role == "ADMIN" %}
-                                          <li><button class="" onclick="usergroup_settings_modal.showModal()">Edit</button></li>
-                                          {% endif %}
                                         </ul>
                                       </div>
                                 </td>

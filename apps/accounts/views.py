@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login as dlogin, logout, update_se
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
-from apps.groups.forms import CreateGroupForm
+from apps.groups.forms import CreateGroupForm, GroupSettingsForm
 from apps.groups.services.group_service import create_group
 from django.db import IntegrityError
 from django.http import JsonResponse
@@ -119,7 +119,6 @@ def profile(request):
 
     friend_form = AddFriendForm()
     user = request.user
-    group_form = CreateGroupForm(user=user)
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
     context = {
@@ -127,7 +126,7 @@ def profile(request):
         "numberOfExcelledQuestions": numberOfExcelledQuestions,
         "numberOfStruggledQuestions": numberOfStruggledQuestions,
         "group_settings_form": CreateGroupForm(user=user),
-        "friend_form": friend_form ,
+        "friend_form": friend_form,
         "group_form": group_form
     }
     print(user.study_groups.all())
