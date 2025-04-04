@@ -36,6 +36,12 @@ class GroupSettingsForm(forms.ModelForm):
         self.fields['invite_code'].initial = self.instance.invite_code
 
 class CreateGroupForm(forms.Form):
+    form_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={
+            'class': 'input',
+            'value': 'create_group'
+        })
+    )
     group_name = forms.CharField(
         help_text='Give your study group a name'
     )
@@ -63,4 +69,5 @@ class CreateGroupForm(forms.Form):
             question_pool_type=self.cleaned_data['question_pool_type'],
             initial_members=self.cleaned_data.get('initial_members')
         )
+        print(f"DEBUG: Group created with ID: {group.id} and Name: {group.group_name}")
         return group

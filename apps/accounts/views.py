@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from .forms import SignupForm, LoginForm, AddFriendForm
+from .forms import SignupForm, LoginForm, AddFriendForm, SettingsForm, ChangePasswordForm
 from .models import CustomUser, FriendRequest
 from django.contrib import messages
-from django.contrib.auth import authenticate, login as dlogin, logout
+from django.contrib.auth import authenticate, login as dlogin, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from apps.groups.models import StudyGroup
 from apps.questions.models import QuestionRelation
@@ -62,74 +62,74 @@ def login(request):
 # TODO: Clean up
 @login_required()
 def profile(request):
-    if request.method == "POST":
-        clear_messages(request)
-        form = AddFriendForm(request.POST)
-        if form.is_valid():
-            friend_email = form.cleaned_data["friend_email"]
-            print("DEBUGGGG")
-            print(request.headers.get('x-requested-with'))
-            # Prevent sending request to self
-            if friend_email == request.user.email:
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': "You cannot send a friend request to yourself."})
-                messages.error(request, "You cannot send a friend request to yourself.")
-                print("CANT SEND TO YOUR SELF")
-                return redirect("profile")
-
-            try:
-                friend_user = CustomUser.objects.get(email=friend_email)
-            except CustomUser.DoesNotExist:
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': "No user found with that email."})
-                messages.error(request, "No user found with that email.")
-                messages.error(request, "No user found with that email.")
-                return redirect("profile")
-
-            # Check if already friends
-            user = request.user
-            friend_user
-            if friend_user in user.friends.all():
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': "You are already friends."})
-                messages.info(request, "You are already friends.")
-                return redirect("profile")
-
-            # Check for an existing pending request
-            if FriendRequest.objects.filter(
-                    from_user=user, to_user=friend_user, status="pending"
-                ).exists():
-                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                    return JsonResponse({'success': False, 'error': "Friend request already sent."})
-                messages.info(request, "Friend request already sent.")
-                return redirect("profile")
-
-            # Create and save the friend request
-            FriendRequest.objects.create(from_user=user, to_user=friend_user)
-            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                return JsonResponse({'success': True})
-            messages.success(request, "Friend request sent!")
-            return redirect("profile")
-    else:
-        form = AddFriendForm()
-
     user = request.user
     if request.method == "POST":
-        create_group_form = CreateGroupForm(request.POST, user=user)
-        if create_group_form.is_valid():
-            create_group_form.save()
-            return redirect("/accounts/profile/")
-    create_group_form = CreateGroupForm(user=user)
+        if request.POST.get("form_id") == "add_friend":
+            clear_messages(request)
+            form = AddFriendForm(request.POST)
+            if form.is_valid():
+                friend_email = form.cleaned_data["friend_email"]
+                print(request.headers.get('x-requested-with'))
+                # Prevent sending request to self
+                if friend_email == request.user.email:
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({'success': False, 'error': "You cannot send a friend request to yourself."})
+                    messages.error(request, "You cannot send a friend request to yourself.")
+                    print("CANT SEND TO YOUR SELF")
+                    return redirect("profile")
 
+                try:
+                    friend_user = CustomUser.objects.get(email=friend_email)
+                except CustomUser.DoesNotExist:
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({'success': False, 'error': "No user found with that email."})
+                    messages.error(request, "No user found with that email.")
+                    messages.error(request, "No user found with that email.")
+                    return redirect("profile")
+
+                # Check if already friends
+                user = request.user
+                friend_user
+                if friend_user in user.friends.all():
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({'success': False, 'error': "You are already friends."})
+                    messages.info(request, "You are already friends.")
+                    return redirect("profile")
+
+                # Check for an existing pending request
+                if FriendRequest.objects.filter(
+                        from_user=user, to_user=friend_user, status="pending"
+                    ).exists():
+                    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                        return JsonResponse({'success': False, 'error': "Friend request already sent."})
+                    messages.info(request, "Friend request already sent.")
+                    return redirect("profile")
+
+                # Create and save the friend request
+                FriendRequest.objects.create(from_user=user, to_user=friend_user)
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True})
+                messages.success(request, "Friend request sent!")
+                return redirect("profile")
+        elif request.POST.get("form_id") == "create_group":
+            form = CreateGroupForm(request.POST, user=user)
+            if form.is_valid():
+                form.save()
+                return redirect("/accounts/profile/")
+
+    friend_form = AddFriendForm()
+    user = request.user
     numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
     numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
     context = {
         "user": user,
         "numberOfExcelledQuestions": numberOfExcelledQuestions,
         "numberOfStruggledQuestions": numberOfStruggledQuestions,
-        "create_group_form": create_group_form,
-        "form": form 
+        "group_settings_form": CreateGroupForm(user=user),
+        "friend_form": friend_form,
+        "group_form": group_form
     }
+    print(user.study_groups.all())
     return render(request, "profile.html", context)
 
 def clear_messages(request):
@@ -159,8 +159,49 @@ def respond_friend_request(request, request_id, response):
     
     return redirect("profile")
 
+#TODO: image upload still not working
+@login_required
 def settings(request):
-    pass
+    clear_messages(request)
+    user = request.user
+
+    if request.method == "POST":
+        print("POST request received for settings")
+        print(request.POST)
+        form = SettingsForm(request.POST, instance=user)
+        print(form.is_valid())
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Settings updated successfully!")
+            print("Settings updated successfully!")
+            return redirect("settings")
+        else:
+            messages.error(request, "Error updating settings.")
+    else:
+        form = SettingsForm(instance=user)
+
+    return render(request, "settings.html", {"form": form})
+
+@login_required
+def change_password(request):
+    clear_messages(request)
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            old_password = form.cleaned_data["old_password"]
+            new_password = form.cleaned_data["new_password1"]
+            user = authenticate(username=request.user.username, password=old_password)
+            if user is not None:
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "Password changed successfully!")
+                return redirect("settings")
+            else:
+                messages.error(request, "Current password is incorrect.")
+    else:
+        form = ChangePasswordForm()
+    return render(request, "change_password.html", {"form": form})
 
 #TODO: Pull out all group logic from profile and put it into the groups app and set up views
 # that return the html partials for that view
@@ -168,3 +209,4 @@ def settings(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+

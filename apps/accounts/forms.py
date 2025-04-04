@@ -86,6 +86,12 @@ class LoginForm(forms.Form):
         return cleaned_data
     
 class AddFriendForm(forms.Form):
+    form_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={
+            'class': 'input',
+            'value': 'add_friend'
+        })
+    )
     friend_email = forms.EmailField(
         label="Friend's Email",
         widget=forms.EmailInput(attrs={
@@ -93,3 +99,80 @@ class AddFriendForm(forms.Form):
             'placeholder': 'Enter friend\'s email'
         })
     )
+
+class SettingsForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'profile_picture', 'email', 'leetcode_username', 'newsletter']
+        widgets = {
+            'email': forms.EmailInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'Enter your email'
+            }),
+            'newsletter': forms.CheckboxInput(attrs={
+                'class': 'checkbox'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'First Name'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'Last Name'
+            }),
+            'profile_picture': forms.ClearableFileInput(attrs={
+                'class': 'file-input',
+                'type': 'file',
+                'placeholder': 'Profile Picture'
+            }),
+            'leetcode_username': forms.TextInput(attrs={
+                'class': 'input input-bordered',
+                'placeholder': 'LeetCode Username'
+            }),
+        }
+
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(label="Current Password", widget=forms.PasswordInput(attrs={
+            'class': 'input validator',
+            'type': 'password',
+            'required placeholder': 'Enter your password',
+            'pattern': '^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+            'minlength': 8,
+            'maxlength': 128,
+        }))
+    new_password1 = forms.CharField(label="New Password", widget=forms.PasswordInput(attrs={
+            'class': 'input validator',
+            'type': 'password',
+            'required placeholder': 'Enter your new password',
+            'pattern': '^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$',
+            'minlength': 8,
+            'maxlength': 128,
+        }))
+    new_password2 = forms.CharField(label="New Password Confirmation", widget=forms.PasswordInput(attrs={
+            'class': 'input validator',
+            'type': 'password',
+            'required placeholder': 'Confirm your new password',
+            'minlength': 8,
+            'maxlength': 128,
+            'title': 'Passwords must match.',
+        }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password1 = cleaned_data.get("new_password1")
+        new_password2 = cleaned_data.get("new_password2")
+
+        if new_password1 and new_password2 and new_password1 != new_password2:
+            raise forms.ValidationError("New passwords don't match")
+        if len(new_password1) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters long.")
+        if len(new_password1) > 128:
+            raise forms.ValidationError("Password must be at most 128 characters long.")
+        if not any(char.isdigit() for char in new_password1):
+            raise forms.ValidationError("Password must contain at least one number.")
+        if not any(char.isupper() for char in new_password1):
+            raise forms.ValidationError("Password must contain at least one uppercase letter.")
+        if not any(char.islower() for char in new_password1):
+            raise forms.ValidationError("Password must contain at least one lowercase letter.")
+        
+        return cleaned_data

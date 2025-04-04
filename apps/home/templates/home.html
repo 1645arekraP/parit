@@ -1,4 +1,163 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<div class="hero bg-base-200 min-h-screen">
+    <div class="hero-content">
+      <div class="max-w-md">
+        <h1 class="text-5xl font-bold">
+            Prepping for an interview doesn't have to be
+            <div id="typing-container" class="typing-effect"></div>
+        </h1>
+        <p class="py-6">
+          Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
+          quasi. In deleniti eaque aut repudiandae et a id nisi.
+        </p>
+        <a class="btn btn-neutral mr-4" href="/accounts/signup">Get started for free</a>
+      </div>
+    </div>
+</div>
+    <div class="hero bg-base-200 min-h-screen">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+        <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3vrTUU3CKbUDThpm8aZzFXdTmai6PodNfXA&s"
+            class="max-w-sm rounded-lg shadow-2xl" />
+        <div>
+            <h1 class="text-5xl font-bold">Personalized study plans tailored just for you</h1>
+            <p class="py-6">
+                Achieve your goals with maximum efficiency.
+            </p>
+            <label class="input">
+                <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></g></svg>
+                <input type="search" class="grow" placeholder="Enter the topics you wish to learn" />
+            </label>
+        </div>
+        </div>
+    </div>
+    <div class="hero bg-base-200 min-h-screen">
+        <div class="hero-content flex-col lg:flex-row">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3vrTUU3CKbUDThpm8aZzFXdTmai6PodNfXA&s"
+            class="max-w-sm rounded-lg shadow-2xl" />
+          <div>
+            <h1 class="text-5xl font-bold">Convenient group based learning </h1>
+            <p class="py-6">
+                Leverage research based learning techniques to elevate your learning.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="hero bg-base-200 min-h-screen">
+        <div class="hero-content flex-col lg:flex-row-reverse">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3vrTUU3CKbUDThpm8aZzFXdTmai6PodNfXA&s"
+            class="max-w-sm rounded-lg shadow-2xl" />
+          <div>
+            <h1 class="text-5xl font-bold">Company specific interview questions and insights all in one place.</h1>
+            <p class="py-6">
+                Maximize your time by focusing on company specific study plans.
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+<style>
+    .typing-effect span:last-child {
+        transition: opacity 0.3s;
+    }
+</style>
+
+<script>
+    class TypingEffect {
+        constructor(element, words) {
+          this.element = element;
+          this.words = words;
+          this.currentWordIndex = 0;
+          this.currentText = '';
+          this.isDeleting = false;
+          this.typingSpeed = 100;
+          this.cursorVisible = true;
+          this.cursorBlinkInterval = null;
+          this.isWaiting = false;
+      
+          this.textElement = document.createElement('span');
+          this.cursorElement = document.createElement('span');
+          this.cursorElement.textContent = '|';
+          this.element.appendChild(this.textElement);
+          this.element.appendChild(this.cursorElement);
+      
+          this.type();
+        }
+      
+        startCursorBlink() {
+          this.stopCursorBlink();
+          this.cursorElement.style.opacity = '1';
+          this.cursorBlinkInterval = setInterval(() => {
+            this.cursorVisible = !this.cursorVisible;
+            this.cursorElement.style.opacity = this.cursorVisible ? '1' : '0';
+          }, 530);
+        }
+      
+        stopCursorBlink() {
+          if (this.cursorBlinkInterval) {
+            clearInterval(this.cursorBlinkInterval);
+            this.cursorBlinkInterval = null;
+          }
+          this.cursorElement.style.opacity = '1';
+          this.cursorVisible = true;
+        }
+      
+        type() {
+          const currentWord = this.words[this.currentWordIndex];
+          
+          if (this.isWaiting) {
+            if (!this.isDeleting) {
+              this.isDeleting = true;
+              this.isWaiting = false;
+              this.stopCursorBlink();
+            }
+            setTimeout(() => this.type(), 100);
+            return;
+          }
+      
+          if (!this.isDeleting) {
+            if (this.currentText.length < currentWord.length) {
+              this.stopCursorBlink();
+              this.currentText = currentWord.slice(0, this.currentText.length + 1);
+              this.typingSpeed = 95; // HERE
+            } else {
+              this.startCursorBlink();
+              this.isWaiting = true;
+              this.typingSpeed = 2000; // WAIT
+            }
+          } else {
+            if (this.currentText.length > 0) {
+              this.currentText = currentWord.slice(0, this.currentText.length - 1);
+              this.typingSpeed = 50; // SPEED HERE
+            } else {
+              this.isDeleting = false;
+              this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
+            }
+          }
+      
+          this.textElement.textContent = this.currentText;
+          setTimeout(() => this.type(), this.typingSpeed);
+        }
+      }
+      
+      // Usage
+      
+      window.onload = function () {
+        const element = document.querySelector('#typing-container');
+        console.log(element);
+        if (!element) {
+            console.error('Typing container not found');
+            return;
+        }
+    
+        const words = ['isolating', 'tedious', 'daunting', 'frustrating'];
+        new TypingEffect(element, words);
+    };
+</script>
 {% endblock %}
