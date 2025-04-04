@@ -1,9 +1,10 @@
 const csrftoken = Cookies.get('csrftoken');
 console.log(csrftoken)
+console.log(group_id)
 document.addEventListener("visibilitychange", (event) => {
     if (document.visibilityState == "visible") {
         const xhr = new XMLHttpRequest();
-        const data = JSON.stringify({ username: username});
+        const data = JSON.stringify({ username: username });
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -11,7 +12,7 @@ document.addEventListener("visibilitychange", (event) => {
               console.log(jsonData);
             }
         }
-        xhr.open("POST", `${base_url}/account/update-solution/${username}/`, true);
+        xhr.open("POST", `${base_url}/account/update-group-solutions/${group_id}/`, true);
         xhr.setRequestHeader("X-CSRFToken", csrftoken);
         xhr.send(data);
         console.log(`Sent request using ${data}`)

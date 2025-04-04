@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% csrf_token %}
+<div class="flex justify-center items-center min-h-screen bg-gray-50">
+    <form  class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box shadow text-center" action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h1 class="mb-3">Settings</h1>
+        <div>
+          <div class=""> First Name:</div>
+            {{form.first_name}}
+          </div>
+          <div>
+            <div class=""> Last Name:</div>
+            {{form.last_name}}
+          </div>
+        <div>
+          <div class=""> Email:</div>
+          {{form.email}}
+        </div>
+        <div>
+          <div class=""> LeetCode Username:</div>
+          {{form.leetcode_username}}
+        </div>
+        
+      <div>
+        <div class=""> Subscribe to our Newsletter:</div>
+        {{form.newsletter}}
+      </div>
+        <div>
+        <div class=""> Profile Picture:</div>
+        <fieldset class="fieldset">
+          <legend class="fieldset-legend">Pick a file</legend>
+          {{form.profile_picture}}
+          <label class="fieldset-label">Max size 2MB</label>
+        </fieldset>
+      </div>
+        <input type="submit" value="Save Changes" class="btn">
+        <a href="{% url 'change_password' %}" class="btn btn-secondary mt-4">Change Password</a>
+    </form>
+  </div>
+{% endblock %}
