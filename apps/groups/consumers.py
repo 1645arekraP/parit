@@ -10,12 +10,17 @@ class GroupConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from apps.groups.models import StudyGroup
 
+        # Check if user is authenticated
+        self.user = self.scope['user']
+        if not self.user.is_authenticated:
+            await self.close()
+            return
+
         # Redis connection used for caching
         self.redis = get_redis_connection()
 
         # User and group setup
         invite_code = self.scope['url_route']['kwargs']['invite_code']
-        self.user = self.scope['user']
         self.group = await sync_to_async(StudyGroup.objects.get)(invite_code=invite_code)
         self.group_name = invite_code
 

@@ -63,6 +63,7 @@ def login(request):
 @login_required()
 def profile(request):
     user = request.user
+    group_form = CreateGroupForm(user=user)
     if request.method == "POST":
         if request.POST.get("form_id") == "add_friend":
             clear_messages(request)

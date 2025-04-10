@@ -15,6 +15,7 @@ import json
 def group(request, invite_code):
     user = request.user
     group = StudyGroup.objects.get(invite_code=invite_code)
+    
     solution, created = Solution.objects.get_or_create(user=user, question=group.question)
 
     form = GroupSettingsForm(request.POST or None, instance=group)
