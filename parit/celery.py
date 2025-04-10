@@ -1,4 +1,4 @@
-"""import os
+import os
 
 from celery import Celery
 
@@ -22,11 +22,12 @@ def debug_task(self):
     print(f'Request: {self.request!r}')
 
 app.conf.beat_schedule = {
-    'test-task': {
-        'task': 'questions.tasks.test_task',
+    'update-group-solutions-tasks': {
+        'task': 'questions.tasks.update_group_solutions_tasks',
         'schedule': 60.0,  # Every minute for testing
     },
+    #'update-group-questions-tasks': {
+    #    'task': 'questions.tasks.update_group_quesions_tasks',
+    #    'schedule': 60.0,  # Every minute for testing
+    #},
 }
-
-
-"""

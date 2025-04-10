@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'apps.questions',
     'apps.studio',
     #'django_celery_beat',
+    'widget_tweaks',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -82,6 +84,25 @@ TEMPLATES = [
 ]
 
 ASGI_APPLICATION = 'parit.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "DECODER_CLASS": "redis.decoder.JSONDecoder",
+            "CONNECTION_POOL_KWARGS": {"decode_responses": True}
+        }
+    }
+}
 
 
 # Database

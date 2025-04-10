@@ -2,7 +2,7 @@ from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrap
 from apps.questions.models import Question, Solution
 from django.http import JsonResponse
 import asyncio
-
+import random
 def create_solution(question, user):
     """
     This should create a solution object for a user and question.
@@ -11,12 +11,12 @@ def create_solution(question, user):
     solution, created = Solution.objects.get_or_create(question=question, user=user)
 
 
-def update_solution_from_leetcode(user, question):
+def update_solution_from_leetcode(user, question_slug):
     """
     This should update a solution object for a user and question from leetcode
     """
-    question_slug = question.title_slug
     leetcode_wrapper = LeetcodeWrapper()
+    question = Question.objects.get(title_slug=question_slug)
     leetcode_solutions = asyncio.run(leetcode_wrapper.get_recent_solutions(user.leetcode_username, 15)).solutions
     for solution in leetcode_solutions:
         if solution.title_slug == question_slug:
@@ -41,3 +41,10 @@ def update_solution_code(group, user, code):
     for solution in leetcode_solutions:
         if solution.title_slug == question.title_slug:
         solution = Solution.get_or_create(question, user, solution)"""
+
+def get_random_question():
+    """
+    This should return a random question from the database
+    """
+    questions = list(Question.objects.all())
+    return random.choice(questions)
