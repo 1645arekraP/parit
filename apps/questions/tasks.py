@@ -14,6 +14,7 @@ from apps.questions.services.solution_services import get_random_question
 
 @shared_task(name='questions.tasks.update_group_solutions_tasks')
 def update_group_solutions_tasks():
+    
     redis = get_redis_connection()
     groups = redis.hkeys("active_groups")
     print(f"Groups: {groups}")
@@ -45,6 +46,7 @@ def update_group_solutions_tasks():
                     "html": html
                 }
             )
+
 @shared_task(name='questions.tasks.update_group_quesions_tasks')
 def update_group_quesions_tasks():
     #TODO: We should also be checking if the question is already in the group

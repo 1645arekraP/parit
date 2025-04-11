@@ -128,7 +128,7 @@ def profile(request):
         "numberOfStruggledQuestions": numberOfStruggledQuestions,
         "group_settings_form": CreateGroupForm(user=user),
         "friend_form": friend_form,
-        "group_form": group_form
+        "create_group_form": group_form
     }
     print(user.study_groups.all())
     return render(request, "profile.html", context)
