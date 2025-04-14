@@ -80,10 +80,15 @@
             console.log('WebSocket error:', event.detail.error);
         });
         document.addEventListener('htmx:wsBeforeMessage', (event) => {
-            console.log('Message incoming:', event.detail.message);
+            console.log('Message incoming');
         });
         document.addEventListener('htmx:wsAfterMessage', (event) => {
-            console.log('Message processed:', event.detail.message);
+            console.log('Message processed:', event);
+            console.log('status:', event.detail.message == 'success');
+            if (event.detail.message == 'success') {
+              console.log('Reloading page');
+              location.reload();
+            }
         });
       </script>
       <script>

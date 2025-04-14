@@ -14,7 +14,7 @@ from apps.questions.services.solution_services import get_random_question
 
 @shared_task(name='questions.tasks.update_group_solutions_tasks')
 def update_group_solutions_tasks():
-    
+
     redis = get_redis_connection()
     groups = redis.hkeys("active_groups")
     print(f"Groups: {groups}")
@@ -61,3 +61,12 @@ def update_group_quesions_tasks():
         group.question = question
         group.save()
         print(f"Updated group: {group.group_name} - {group.invite_code}")
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            group.invite_code,
+            {
+                "type": "updated_question",  # Must match your consumer method name,
+                "status": "success" # TODO: Add status
+            }
+        )

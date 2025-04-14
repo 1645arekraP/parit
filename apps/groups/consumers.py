@@ -70,6 +70,6 @@ class GroupConsumer(AsyncWebsocketConsumer):
 
         print("Updated solutions sent")
 
-    async def updated_questions(self, event):
+    async def updated_question(self, event):
         # TODO: add send status
         await self.send(text_data=event['status'])
