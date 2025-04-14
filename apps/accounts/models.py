@@ -4,6 +4,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
+from django.core.files.base import ContentFile
+import os, uuid
 
 class CustomUser(AbstractUser):
     # Basic user info
@@ -59,6 +61,15 @@ class CustomUser(AbstractUser):
         
         numAcceptedSolution = self.solutions.filter(accepted=True).count()
         return (numAcceptedSolution/numberOfSolutions) * 100
+    
+    def save(self, *args, **kwargs):
+        if self.profile_picture:
+            # Generate a unique filename
+            file_extension = os.path.splitext(self.profile_picture.name)[1]
+            new_filename = f"{uuid.uuid4()}{file_extension}"
+            self.profile_picture.name = new_filename
+
+        super().save(*args, **kwargs)
     
 class FriendRequest(models.Model):
     from_user = models.ForeignKey(

@@ -6,6 +6,20 @@ from django.contrib.auth import authenticate
 
 
 class SignupForm(forms.ModelForm):
+
+    leetcode_username = forms.CharField(
+        label="LeetCode Username",
+        widget=forms.TextInput(attrs={
+            'class': 'input validator',
+            'type': 'input',
+            'required placeholder': 'LeetCode Username',
+            'pattern': '[A-Za-z][A-Za-z0-9\-]*',
+            'minlength': 3,
+            'maxlength': 30,
+            'title': 'Only letters, numbers or dash',
+            })
+    )
+
     password1 = forms.CharField(label="Password", widget=forms.PasswordInput(attrs={
             'class': 'input validator',
             'type': 'password',
@@ -59,7 +73,7 @@ class SignupForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        user.leetcode_username = self.cleaned_data["username"]
+        user.leetcode_username = self.cleaned_data["leetcode_username"]
         if commit:
             user.save()
         return user

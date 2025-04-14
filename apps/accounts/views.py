@@ -169,7 +169,7 @@ def settings(request):
     if request.method == "POST":
         print("POST request received for settings")
         print(request.POST)
-        form = SettingsForm(request.POST, instance=user)
+        form = SettingsForm(request.POST, request.FILES, instance=user)
         print(form.is_valid())
         if form.is_valid():
             form.save()
