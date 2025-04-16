@@ -19,6 +19,12 @@ class StudyGroup(models.Model):
         ("NEETCODE_250", "Neetcode 250"),
         ("LC_ALL", "Leetcode All"),
     ]
+
+    PRIVACY_CHOICES = [
+        ("INVITE_ONLY", "Invite Only"),
+        ("FRIENDS_ONLY", "Friends Only"),
+        ("PUBLIC", "Public"),
+    ]
     
     members = models.ManyToManyField(CustomUser, related_name="study_groups", through="StudyGroupMembership")
     question = models.ForeignKey(
@@ -47,6 +53,13 @@ class StudyGroup(models.Model):
         blank=False,
         default="DAILY",
         choices=QUESTION_POOL_TYPE_CHOICES
+    )
+    privacy = models.CharField(
+        max_length=36,
+        null=False,
+        blank=False,
+        default="PRIVATE",
+        choices=PRIVACY_CHOICES
     )
     
     # Move this to a service
