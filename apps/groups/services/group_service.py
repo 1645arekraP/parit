@@ -2,6 +2,7 @@ from apps.groups.models import StudyGroup, StudyGroupMembership
 from apps.questions.models import Question, Solution
 from apps.questions.services.solution_services import get_or_init
 from apps.questions.services.question_service import get_new_question
+from django.contrib import messages
 
 def create_group(user, group_name, question_pool_type, initial_members=None):
     question = get_new_question(study_set=question_pool_type)
@@ -22,6 +23,7 @@ def create_group(user, group_name, question_pool_type, initial_members=None):
     # Create a solution for each initial member
     for member in initial_members:
         get_or_init(user=member, question=question)
+    
     return group
 
 def update_role(group, user, role):

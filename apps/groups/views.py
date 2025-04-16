@@ -8,7 +8,7 @@ from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrap
 from .decorators import owner_required, admin_required, belongs_to_group
 from .services.group_service import leave_group as service_leave_group
 from apps.questions.services.solution_services import update_from_leetcode, get_or_init
-import asyncio
+from django.contrib import messages
 import json
 
 @belongs_to_group
@@ -23,6 +23,7 @@ def group(request, invite_code):
     
     if request.method == "POST" and form.is_valid():
         form.save()
+        messages.success(request, 'Updated group settings!')
         return redirect("group", invite_code=invite_code) 
     
     return render(request, "group.html", {"user": user, "group": group, "group_data": group_data, "group_settings_form": form, "solution": solution})
@@ -39,6 +40,7 @@ def refresh_group_data(request, invite_code):
     for member in group.members.all():
         update_from_leetcode(member, group.question.title_slug)
     group_data = group.get_member_solutions()
+    messages.success(request, 'Group solutions updated!')
     return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': group_data})
 
 @admin_required
@@ -51,6 +53,8 @@ def group_settings(request, invite_code):
 def leave_group(request, invite_code):
     group = StudyGroup.objects.get(invite_code=invite_code)
     service_leave_group(group, request.user)
+    messages.info(request, 'Left group!')
+    messages.success(request, 'Left group!')
     return redirect("profile")
 
 @belongs_to_group

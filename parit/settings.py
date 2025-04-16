@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-import dj_database_url
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -110,7 +109,6 @@ CACHES = {
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-#TODO: Change to postgres and make sure DigitalOcean can use the same format
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -159,8 +157,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-print(f"DEBUG: {DEBUG}")
 
 # This production code might break development mode, so we check whether we're in DEBUG mode
 if not DEBUG:    # Tell Django to copy static assets into a path called `staticfiles` (this is specific to Render)
