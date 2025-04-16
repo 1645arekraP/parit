@@ -15,7 +15,7 @@
               <tr>
                   <th>{{forloop.counter}}</th>
                   <td>{{user}}</td>
-                  <td>{{solution.status}}</td>
+                  <td>{{solution.get_status_display}}</td>
                   <th>
                       <button hx-get="/questions/{{user.username}}/solution/{{group.question.title_slug}}"
                               hx-target="#solution_content"
