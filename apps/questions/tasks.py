@@ -1,6 +1,6 @@
 from celery import shared_task
 from datetime import datetime
-from apps.questions.services.solution_services import update_solution_from_leetcode
+from apps.questions.services.solution_services import update_from_leetcode
 from apps.accounts.models import CustomUser
 from apps.questions.models import Question
 from channels.layers import get_channel_layer
@@ -24,7 +24,7 @@ def update_group_solutions_tasks():
         question = group.question
         print(f"Updating group: {group.group_name} - {group.invite_code}")
         for member in group.members.all():
-            update_solution_from_leetcode(member, question.title_slug)
+            update_from_leetcode(member, question.title_slug)
 
             # Get group data TODO: A view already has this logic so we should move it to a service
             group_data = group.get_member_solutions()

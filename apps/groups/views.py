@@ -7,7 +7,7 @@ from apps.questions.models import Solution
 from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from .decorators import owner_required, admin_required, belongs_to_group
 from .services.group_service import leave_group as service_leave_group
-from apps.questions.services.solution_services import update_solution_from_leetcode
+from apps.questions.services.solution_services import update_from_leetcode, get_or_init
 import asyncio
 import json
 
@@ -16,7 +16,7 @@ def group(request, invite_code):
     user = request.user
     group = StudyGroup.objects.get(invite_code=invite_code)
     
-    solution, created = Solution.objects.get_or_create(user=user, question=group.question)
+    solution, created = get_or_init(user=user, question=group.question)
 
     form = GroupSettingsForm(request.POST or None, instance=group)
     group_data = group.get_member_solutions()
@@ -37,7 +37,7 @@ def refresh_group_data(request, invite_code):
     #    return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': solutions})
     
     for member in group.members.all():
-        update_solution_from_leetcode(member, group.question.title_slug)
+        update_from_leetcode(member, group.question.title_slug)
     group_data = group.get_member_solutions()
     return render(request, 'partials/members_table.html', {'group': group, 'user':user, 'group_data': group_data})
 
