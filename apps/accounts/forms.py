@@ -2,6 +2,7 @@ from django import forms
 from .models import CustomUser
 from django.core.exceptions import ValidationError
 from django.contrib.auth import authenticate
+from django.core.files.storage import default_storage
 
 
 
@@ -144,6 +145,17 @@ class SettingsForm(forms.ModelForm):
                 'placeholder': 'LeetCode Username'
             }),
         }
+    def clean_profile_picture(self):
+        # Check if the "Clear" checkbox was checked
+        if self.cleaned_data['profile_picture'] is False:  # "False" means clear was checked
+            # Get the current profile picture filename
+            instance = getattr(self, 'instance', None)
+            if instance and instance.profile_picture:
+                if default_storage.exists(instance.profile_picture.name):
+                    default_storage.delete(instance.profile_picture.name)
+            return None 
+
+        return self.cleaned_data['profile_picture']  # Return the value if not clearing
 
 class ChangePasswordForm(forms.Form):
     old_password = forms.CharField(label="Current Password", widget=forms.PasswordInput(attrs={

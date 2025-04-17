@@ -176,6 +176,9 @@ def settings(request):
         form = SettingsForm(request.POST, request.FILES, instance=user)
         print(form.is_valid())
         if form.is_valid():
+            if form.cleaned_data['profile_picture'] is None:
+                user.profile_picture = None
+                user.save()
             form.save()
             messages.success(request, "Settings updated successfully!")
             print("Settings updated successfully!")
