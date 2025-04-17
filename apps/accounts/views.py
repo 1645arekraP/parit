@@ -218,3 +218,9 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+def public_profile(request, user_id):
+    user = CustomUser.objects.get(id=user_id)
+    numberOfExcelledQuestions = user.questions.filter(questionrelation__relation_type="excelled").count()
+    numberOfStruggledQuestions = user.questions.filter(questionrelation__relation_type="struggled").count()
+    return render(request, "public_profile.html", {"user": user, "numberOfExcelledQuestions": numberOfExcelledQuestions, "numberOfStruggledQuestions": numberOfStruggledQuestions })

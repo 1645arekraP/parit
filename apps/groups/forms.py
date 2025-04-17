@@ -43,6 +43,10 @@ class CreateGroupForm(forms.Form):
         })
     )
     group_name = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'input input-bordered',
+            'placeholder': 'Enter your group name',
+        }),
         help_text='Give your study group a name'
     )
     question_pool_type = forms.ChoiceField(

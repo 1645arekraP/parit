@@ -116,17 +116,19 @@
                   Add Friend
               </button>
             </div>
-                <div class="dropdown menu w-100 rounded-box bg-base-100 shadow-sm text-center border-base-300"
+                <div class="dropdown menu w-100"
                   popover id="friend_request" style="position-anchor:--anchor-1">
                  
                       {% if friend_form %}
-                      
-                          <h2>Send a Friend Request</h2>
-                          <form id="add-friend-form"  action="{% url 'profile' %}" method="POST">
+                          <fieldset class="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
+                            <legend class="fieldset-legend">Add Friend</legend>
+                            <form id="add-friend-form"  action="{% url 'profile' %}" method="POST">
                               {% csrf_token %}
                               {{ friend_form.as_p }}
-                              <button id="submit" type="submit" value="Submit" class="btn btn-primary">Send Request</button>
+                              <button id="submit" type="submit" value="Submit" class="btn btn-neutral mt-4">Send Request</button>
+
                           </form>
+                          </fieldset>
                         
                       {% endif %}
                       
@@ -190,7 +192,7 @@
                     </td>
                     <td>{{friend.acceptance_rate}}</td>
                     <th>
-                      <button class="bg-base-300 btn btn-ghost btn-xs">view profile</button>
+                      <a href="{% url 'public_profile' friend.id %}" class="btn btn-ghost btn-xs">view profile</a>
                     </th>
                   </tr>
                   {% endfor %}
