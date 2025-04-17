@@ -24,7 +24,7 @@
   <header class="sticky top-0 z-50 h-16 rounded-box shadow">
     <div class="navbar bg-base-100 shadow-sm">
       <div class="navbar-start">
-        <a class="btn btn-ghost text-xl" href="/">Parit <p> {{user.profile.profile_picture.url}}</p></a>
+        <a class="btn btn-ghost text-xl" href="/">Parit</a>
       </div>
       <div class="navbar-center hidden lg:flex">
         
@@ -38,12 +38,11 @@
           <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
             <div class="avatar avatar-online">
               <div class="w-12 rounded-full">
-                {%if user.profile.profile_picture.url%}
-                <img src={{user.profile.profile_picture.url }}>
+                {%if user.profile_picture%}
+                <img src= {{user.profile_picture.url }}>
                 {%else%}
                 <img src="/static/src/images/Default_pfp.webp">
                 {%endif%}
-                <img src={{ user.profile.profile_picture.url|default:"/static/src/images/Default_pfp.webp" }}>
               </div>
             </div>
           </div>

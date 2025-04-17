@@ -11,7 +11,11 @@
             <div class="flex-shrink-0">
                 <div class="avatar">
                     <div class="w-24 h-24 rounded-full ring ring-white ring-offset-base-100 ring-offset-2">
-                        <img src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg" alt="User Avatar" />
+                      {%if user.profile_picture%}
+                        <img src= {{user.profile_picture.url }}>
+                      {%else%}
+                        <img src="/static/src/images/Default_pfp.webp">
+                      {%endif%}
                     </div>
                 </div>
             </div>
@@ -19,7 +23,7 @@
                 <h1 class="text-3xl font-bold">{{user.leetcode_username}}</h1>
                 <p class="text-lg text-gray-200 mt-2">{{user.email}}</p>
                 <div class="mt-4">
-                    <span class="badge badge-secondary">Member Since: {{user.date_joined}}</span>
+                    <span class="badge badge-secondary"> Member Since: {{user.date_joined}}</span>
                 </div>
             </div>
             <div class="flex flex-col gap-2">
@@ -163,9 +167,11 @@
                     <td>
                       <div class="avatar">
                         <div class="mask mask-squircle h-12 w-12">
-                          <img
-                            src="https://static.vecteezy.com/system/resources/thumbnails/002/318/271/small/user-profile-icon-free-vector.jpg"
-                            alt="Avatar Tailwind CSS Component" />
+                          {%if friend.profile_picture%}
+                            <img src= {{friend.profile_picture.url }}>
+                          {%else%}
+                            <img src="/static/src/images/Default_pfp.webp">
+                          {%endif%}
                         </div>
                       </div>
                     </td>

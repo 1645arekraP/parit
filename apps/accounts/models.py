@@ -4,7 +4,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
-from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 import os, uuid
 
 class CustomUser(AbstractUser):
@@ -63,10 +63,20 @@ class CustomUser(AbstractUser):
         return (numAcceptedSolution/numberOfSolutions) * 100
     
     def save(self, *args, **kwargs):
+        try:
+            old_picture = CustomUser.objects.get(pk=self.pk).profile_picture
+        except CustomUser.DoesNotExist:
+            old_picture = None
+
         if self.profile_picture:
+            # Delete the old picture if it exists
+            if old_picture:
+                if default_storage.exists(old_picture.name):
+                    default_storage.delete(old_picture.name)
+
             # Generate a unique filename
             file_extension = os.path.splitext(self.profile_picture.name)[1]
-            new_filename = f"{uuid.uuid4()}{file_extension}"
+            new_filename = f"{self.id}{file_extension}"
             self.profile_picture.name = new_filename
 
         super().save(*args, **kwargs)

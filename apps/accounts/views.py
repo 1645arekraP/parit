@@ -19,6 +19,11 @@ def signup(request):
             try:
                 form.save()
                 print("Form was valid!")
+                username = form.cleaned_data["username"]
+                password = form.cleaned_data["password1"]
+                user = authenticate(request, username=username, password=password)
+                dlogin(request, user)
+                return redirect("/accounts/profile/")
             except IntegrityError as e:
                 if 'UNIQUE constraint failed' in str(e):
                     form.add_error('username', 'This LeetCode username is already taken.')
@@ -130,7 +135,6 @@ def profile(request):
         "friend_form": friend_form,
         "create_group_form": group_form
     }
-    print(user.study_groups.all())
     return render(request, "profile.html", context)
 
 def clear_messages(request):
@@ -160,7 +164,7 @@ def respond_friend_request(request, request_id, response):
     
     return redirect("profile")
 
-#TODO: image upload still not working
+
 @login_required
 def settings(request):
     clear_messages(request)
