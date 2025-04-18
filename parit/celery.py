@@ -5,8 +5,8 @@ from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'parit.settings')
 
 app = Celery('parit', 
-             broker=f"redis://{os.getenv('REDIS_USERNAME')}:{os.getenv('REDIS_PASSWORD')}@{os.getenv("REDIS_HOST")}:{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_BROKER_DB')}", 
-             backend=f"redis://{os.getenv('REDIS_USERNAME')}:{os.getenv('REDIS_PASSWORD')}@{os.getenv("REDIS_HOST")}:{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_BACKEND_DB')}")
+             broker=f"rediss://{os.getenv('REDIS_USERNAME')}:{os.getenv('REDIS_PASSWORD')}@{os.getenv("REDIS_HOST")}:{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_BROKER_DB')}", 
+             backend=f"rediss://{os.getenv('REDIS_USERNAME')}:{os.getenv('REDIS_PASSWORD')}@{os.getenv("REDIS_HOST")}:{os.getenv('REDIS_PORT')}/{os.getenv('REDIS_BACKEND_DB')}")
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
