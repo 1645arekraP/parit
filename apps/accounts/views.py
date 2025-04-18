@@ -121,6 +121,7 @@ def profile(request):
             form = CreateGroupForm(request.POST, user=user)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Successfully created a group!')
                 return redirect("/accounts/profile/")
 
     friend_form = AddFriendForm()
