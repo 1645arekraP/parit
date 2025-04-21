@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from .forms import GroupSettingsForm
-from .models import StudyGroup
+from .models import StudyGroup, StudyGroupMembership
 from apps.questions.models import Solution
 from apps.questions.utils.wrappers.leetcode.leetcode_wrapper import LeetcodeWrapper
 from .decorators import owner_required, admin_required, belongs_to_group
@@ -15,6 +15,8 @@ import json
 def group(request, invite_code):
     user = request.user
     group = StudyGroup.objects.get(invite_code=invite_code)
+    memberships = group.memberships.all()
+    print(memberships)
     
     solution, created = get_or_init(user=user, question=group.question)
 
@@ -26,7 +28,7 @@ def group(request, invite_code):
         messages.success(request, 'Updated group settings!')
         return redirect("group", invite_code=invite_code) 
     
-    return render(request, "group.html", {"user": user, "group": group, "group_data": group_data, "group_settings_form": form, "solution": solution})
+    return render(request, "group.html", {"user": user, "group": group, "group_data": group_data, "group_settings_form": form, "solution": solution, "memberships": memberships})
 
 @belongs_to_group
 def refresh_group_data(request, invite_code):

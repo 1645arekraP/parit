@@ -13,7 +13,10 @@
   
           <!-- Tab content -->
           <div role="tab-contents" class="flex-grow flex flex-col border-t border-base-300 p-4">
-            <div role="tab-content" class="flex-grow overflow-auto h-0">{{ group.question.content|safe }}</div>
+            <div role="tab-content" class="flex-grow overflow-auto h-0">
+              <a class="link color-primary" href="{{ group.question.link }}" target="_blank">{{group.question.title}}</a>
+              {{ group.question.content|safe }}
+            </div>
           </div>
     </div>
 
@@ -35,14 +38,8 @@
             </div>
 
             <!-- Settings -->
-            <div role="tab-content" class="flex-grow overflow-auto h-0 hidden">
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ group_settings_form }}
-                    <div class="modal-action">
-                      <button type="submit" class="btn">Submit</button>
-                    </div>
-                  </form>
+            <div role="tab-content" class="flex-col flex-grow overflow-hidden h-0 min-h-0 hidden">
+              {% include 'group_settings.html' %}
             </div>
         </div>
     </div>
@@ -55,32 +52,38 @@
           </div>
   
           <!-- Tab content -->
-          <div role="tab-contents" class="flex-grow flex flex-col border-t border-base-300 p-4">
-            <div role="tab-content" class="flex-grow overflow-auto h-0">Monaco editor goes here</div>
-          </div>
-    </div>
+          <div
+  role="tab-content"
+  class="flex flex-col flex-grow h-full overflow-hidden"
+>
+  <!-- ① Fixed header for your selector -->
+  <div class="flex-none border-y border-base-300">
+    <select
+      id="language-select"
+      class="select select-ghost w-auto"
+    >
+      <option>Python</option>
+      <option>Java</option>
+      <option>JavaScript</option>
+    </select>
+  </div>
+
+  <!-- ② The editor fills the rest, with no parent scrolling -->
+  <div class="flex-grow min-h-0 py-2">
+    <div
+      id="monaco-editor"
+      class="w-full h-full"
+    ></div>
+  </div>
 </div>
 
-<script>
-    document.querySelectorAll('.tab-box').forEach(box => {
-  const tabs = box.querySelectorAll('[role="tab"]');
-  const contents = box.querySelectorAll('[role="tab-content"]');
+    </div>
+</div>
+{% endblock %}
 
-  tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => {
-      tabs.forEach(t => {
-        t.classList.remove('tab-active');
-        t.setAttribute('aria-selected', 'false');
-      });
-      contents.forEach(c => c.classList.add('hidden'));
+{% block extra_scripts %}
 
-      tab.classList.add('tab-active');
-      tab.setAttribute('aria-selected', 'true');
-      contents[index].classList.remove('hidden');
-    });
-  });
-});
-
-  </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+<script src="{% static 'groups/js/monaco.js' %}"></script>
+<script src="{% static 'groups/js/groups.js' %}"></script>
 {% endblock %}

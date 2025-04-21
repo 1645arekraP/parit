@@ -24,13 +24,13 @@
                   <td>{{user}}</td>
                   <td>{{solution.get_status_display}}</td>
                   <th>
-                      <button hx-get="/questions/{{user.username}}/solution/{{group.question.title_slug}}"
-                              hx-target="#solution_content"
-                              hx-swap="innerHTML"
-                              onclick="solution_modal.showModal()"
-                              class="btn btn-ghost btn-xs">
-                          details
-                      </button>
+                    <button hx-get="/questions/{{user.username}}/solution/{{group.question.title_slug}}"
+                    hx-target="#solution_content"
+                    hx-swap="innerHTML"
+                    onclick="solution_modal.showModal()"
+                    class="btn btn-ghost btn-xs">
+                        details
+                    </button>
                   </th>
               </tr>
               {% endfor %}
@@ -43,6 +43,7 @@
     <!-- Modal Close Button -->
     <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('solution_modal').close()">✕</button>
     <div id="solution_content">
+        <p>Hello World!</p>
     </div>
     <div class="modal-action">
     </div>

@@ -128,7 +128,7 @@ class StudyGroupMembership(models.Model):
         ("ADMIN", "Admin"), 
         ("MEMBER", "Member"),
     ]
-    study_group = models.ForeignKey(StudyGroup, on_delete=models.CASCADE)
+    study_group = models.ForeignKey(StudyGroup, related_name="memberships", on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=ROLES, default="MEMBER")
 

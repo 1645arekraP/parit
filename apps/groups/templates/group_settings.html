@@ -1,0 +1,70 @@
+<form class="flex flex-col flex-grow h-full">
+    {% csrf_token %}
+    <div class="grid grid-cols-2 gap-4 flex-grow grid-rows-[auto_1fr_auto] min-h-0 overflow-auto px-4 pt-4 pb-0">
+        
+        <!-- Core Group Settings -->
+        <div class="">
+            <label class="input w-full">
+                <span class="label">Name</span>
+                <input type="text" value="{{ group.group_name }}" placeholder="Group Name" />
+            </label>
+        </div>
+
+        <!-- Group Privacy Settings-->
+        <div class="">
+            <label class="select w-full">
+                <span class="label">Privacy</span>
+                <select>
+                    {% for value, label in group.PRIVACY_CHOICES %}
+                        <option value="{{ value }}"
+                            {% if group.privacy == value %}
+                                selected
+                            {% endif %}>
+                        {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </label>
+        </div>
+
+        <!-- Group memberships -->
+        <div class="col-span-2">
+            <table class="table">
+                <thead>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Other</th>
+                </thead>
+                <tbody>
+                    {% for membership in memberships %}
+                        <tr>
+                            <td>{{ membership.user.username }}</td>
+                            <td>
+                                <select>
+                                    {% for value, label in membership.ROLES %}
+                                        <option value="{{ value }}"
+                                            {% if membership.role == value %}
+                                                selected
+                                            {% endif %}>
+                                        {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><button 
+                                onclick="" 
+                                class="btn btn-ghost btn-xs"
+                                {% if membership.user == request.user %} disabled="disabled" {% endif %}>
+                                Kick
+                            </button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Footer TODO: Looks a bit weird-->
+    <div class="col-span-2 flex justify-end py-2 pr-2 border-t border-base-300">
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+    </div>
+</form>
