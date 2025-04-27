@@ -1,7 +1,36 @@
 @import "tailwindcss";
+
+@plugin "@tailwindcss/typography";
 @plugin "daisyui" {
     themes: light --default, dark --prefersdark;
-    
+}
+
+@layer components {
+    .badge-easy {
+        @apply badge-success;
+    }
+    .badge-medium {
+        @apply badge-warning;
+    }
+    .badge-hard {
+        @apply badge-error;
+    }
+}
+
+@layer utilities {
+    .prose pre {
+        @apply bg-base-200 text-base-content;
+    }
+}
+
+.wrap-pre pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.prose code::before,
+.prose code::after {
+  content: none;
 }
 
 html {

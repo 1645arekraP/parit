@@ -23,16 +23,31 @@ class Solution(models.Model):
         related_name='solution',
     )
     STATUS_CHOICES = [
-        ('has_not_started', _('Has not started')),
-        ('in_progress', _('In progress')),
+        ('has_not_started', _('Has Not Started')),
+        ('in_progress', _('In Progress')),
         ('solved', _('Solved'))
     ]
+    # Custom badges for rendering status. 
+    STATUS_BADGES = {
+        'has_not_started': 'badge badge-error',
+        'in_progress': 'badge badge-warning',
+        'solved': 'badge badge-success',
+    }
     memory = models.CharField(default=-1, blank=True, max_length=12)
     runtime = models.CharField(default=-1, blank=True, max_length=12)
     status = models.CharField(choices=STATUS_CHOICES, default='has_not_started', max_length=28)
     last_updated = models.CharField(default=str(-float('inf')), max_length=250)
     attempts = models.IntegerField(default=0)
     code = models.TextField(default="User has not submitted any code yet", max_length=10000)
+
+    @property
+    def status_badge(self) -> str:
+        """
+        Returns the full class string for the current status.
+        Falls back to just 'badge' if somehow the key is missing.
+        """
+        return self.STATUS_BADGES.get(self.status, 'badge')
+
 
     class Meta:
         unique_together = ("user", "question")

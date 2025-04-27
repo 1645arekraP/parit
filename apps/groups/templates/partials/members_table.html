@@ -38,15 +38,12 @@
       </table>
   </div>
 
+  <!-- Modal for displaying user solutions. A solution is injected through the 'solution_content' div -->
   <dialog id="solution_modal" class="modal overflow-y-auto">
-  <div class="modal-box overflow-y-auto">
+  <div class="modal-box flex flex-col overflow-y-auto p-0 w-auto min-w-xl max-w-2xl h-auto min-h-[12rem] max-h-[70vh]">
     <!-- Modal Close Button -->
     <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onclick="document.getElementById('solution_modal').close()">✕</button>
-    <div id="solution_content">
-        <p>Hello World!</p>
-    </div>
-    <div class="modal-action">
-    </div>
+    <div id="solution_content" class="flex flex-col flex-1 overflow-auto"></div>
   </div>
  </dialog>  
 </div>

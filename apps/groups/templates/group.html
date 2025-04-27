@@ -13,9 +13,19 @@
   
           <!-- Tab content -->
           <div role="tab-contents" class="flex-grow flex flex-col border-t border-base-300 p-4">
-            <div role="tab-content" class="flex-grow overflow-auto h-0">
-              <a class="link color-primary" href="{{ group.question.link }}" target="_blank">{{group.question.title}}</a>
-              {{ group.question.content|safe }}
+            <div role="tab-content" class="flex-grow overflow-auto h-0 max-w-none wrap-pre">
+                <a class="flex items-center gap-2" href="{{ group.question.link }}" target="_blank">
+                  {{group.question.title}}
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                </a>
+
+              <!-- Question badges -->
+              <span class="badge badge-soft badge-{{ group.question.difficulty|lower }} badge-sm my-2">{{ group.question.difficulty }}</span>
+              <div class="prose prose-sm">
+                {{ group.question.content|safe }}
+              </div>
             </div>
           </div>
     </div>
@@ -56,24 +66,28 @@
   role="tab-content"
   class="flex flex-col flex-grow h-full overflow-hidden"
 >
-  <!-- ① Fixed header for your selector -->
+  <!-- Language Selector Header -->
   <div class="flex-none border-y border-base-300">
-    <select
-      id="language-select"
-      class="select select-ghost w-auto"
-    >
+    <select id="language-select" class="select select-ghost w-fit">
       <option>Python</option>
       <option>Java</option>
       <option>JavaScript</option>
     </select>
   </div>
 
-  <!-- ② The editor fills the rest, with no parent scrolling -->
+  <!-- Monaco Editor -->
   <div class="flex-grow min-h-0 py-2">
     <div
       id="monaco-editor"
-      class="w-full h-full"
-    ></div>
+      class="w-full h-full">
+  </div>
+  <div id="autosave-trigger" 
+        hx-post="./save_solution/"
+        hx-swap="none"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        hx-trigger="autosave-event from:body"
+        style="display:none;">
+      </div>
   </div>
 </div>
 
