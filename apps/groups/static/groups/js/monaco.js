@@ -7,7 +7,7 @@
 let editor;
 let saveTimeout;
 let selected_language = document.getElementById('language-select').value;
-let code_content = '# Hello World!'
+let code_content = document.getElementById('monaco-editor').getAttribute('code-content');
 let AUTOSAVE_DELAY = 1000;
 require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }});
 require(['vs/editor/editor.main'], function() {

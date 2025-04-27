@@ -79,7 +79,8 @@
   <div class="flex-grow min-h-0 py-2">
     <div
       id="monaco-editor"
-      class="w-full h-full">
+      class="w-full h-full"
+      code-content="{{ solution.code }}">
   </div>
   <div id="autosave-trigger" 
         hx-post="./save_solution/"
