@@ -29,6 +29,19 @@ def create_group(user, group_name, question_pool_type, initial_members=None):
 def update_role(group, user, role):
     group.update_member_role(user, role)
 
+def update_group(group, data):
+    """
+    This function is to update a groups data along with it's memberships
+    """
+    print(data)
+    group.group_name = data["group_name"]
+    group.privacy = data["privacy"]
+    group.save()
+    for membership in group.memberships.all():
+        field_name = f"membership_{membership.id}_role"
+        membership.role = data[field_name]
+        membership.save()
+
 
 def leave_group(group, user):
     if group.members.count() == 1:

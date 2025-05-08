@@ -2,8 +2,6 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
-    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-      "Courier New", monospace;
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-green-600: oklch(62.7% 0.194 149.214);
     --color-blue-500: oklch(62.3% 0.214 259.815);
@@ -20,7 +18,6 @@
     --container-xs: 20rem;
     --container-sm: 24rem;
     --container-md: 28rem;
-    --container-lg: 32rem;
     --container-xl: 36rem;
     --container-2xl: 42rem;
     --text-xs: 0.75rem;
@@ -3367,14 +3364,8 @@
   .max-h-\[40vh\] {
     max-height: 40vh;
   }
-  .max-h-\[65vh\] {
-    max-height: 65vh;
-  }
   .max-h-\[70vh\] {
     max-height: 70vh;
-  }
-  .max-h-\[80vh\] {
-    max-height: 80vh;
   }
   .min-h-0 {
     min-height: calc(var(--spacing) * 0);
@@ -3382,20 +3373,11 @@
   .min-h-\[12rem\] {
     min-height: 12rem;
   }
-  .min-h-\[\]\] {
-    min-height: ];
-  }
   .min-h-screen {
     min-height: 100vh;
   }
   .w-1\/2 {
     width: calc(1/2 * 100%);
-  }
-  .w-2xl {
-    width: var(--container-2xl);
-  }
-  .w-3\/4 {
-    width: calc(3/4 * 100%);
   }
   .w-4 {
     width: calc(var(--spacing) * 4);
@@ -3427,15 +3409,6 @@
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
-  .max-w-3\/4 {
-    max-width: calc(3/4 * 100%);
-  }
-  .max-w-full {
-    max-width: 100%;
-  }
-  .max-w-lg {
-    max-width: var(--container-lg);
-  }
   .max-w-md {
     max-width: var(--container-md);
   }
@@ -3445,23 +3418,8 @@
   .max-w-sm {
     max-width: var(--container-sm);
   }
-  .max-w-xl {
-    max-width: var(--container-xl);
-  }
-  .min-w-2xl {
-    min-width: var(--container-2xl);
-  }
-  .min-w-lg {
-    min-width: var(--container-lg);
-  }
-  .min-w-md {
-    min-width: var(--container-md);
-  }
   .min-w-xl {
     min-width: var(--container-xl);
-  }
-  .min-w-xs {
-    min-width: var(--container-xs);
   }
   .flex-1 {
     flex: 1;
@@ -3480,19 +3438,6 @@
   }
   .transform {
     transform: var(--tw-rotate-x) var(--tw-rotate-y) var(--tw-rotate-z) var(--tw-skew-x) var(--tw-skew-y);
-  }
-  .skeleton {
-    border-radius: var(--radius-box);
-    background-color: var(--color-base-300);
-    @media (prefers-reduced-motion: reduce) {
-      transition-duration: 15s;
-    }
-    will-change: background-position;
-    animation: skeleton 1.8s ease-in-out infinite;
-    background-image: linear-gradient( 105deg, #0000 0% 40%, var(--color-base-100) 50%, #0000 60% 100% );
-    background-size: 200% auto;
-    background-repeat: no-repeat;
-    background-position-x: -50%;
   }
   .link {
     cursor: pointer;
@@ -3744,9 +3689,6 @@
   .text-left {
     text-align: left;
   }
-  .font-mono {
-    font-family: var(--font-mono);
-  }
   .text-2xl {
     font-size: var(--text-2xl);
     line-height: var(--tw-leading, var(--text-2xl--line-height));
@@ -3789,6 +3731,10 @@
     --btn-p: 0.5rem;
     --size: calc(var(--size-field, 0.25rem) * 6);
   }
+  .select-sm {
+    --size: calc(var(--size-field, 0.25rem) * 8);
+    font-size: 0.75rem;
+  }
   .font-bold {
     --tw-font-weight: var(--font-weight-bold);
     font-weight: var(--font-weight-bold);
@@ -3810,9 +3756,6 @@
   }
   .whitespace-break-spaces {
     white-space: break-spaces;
-  }
-  .whitespace-pre-wrap {
-    white-space: pre-wrap;
   }
   .badge-error {
     --badge-color: var(--color-error);

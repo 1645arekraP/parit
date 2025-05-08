@@ -22,6 +22,7 @@ class Solution(models.Model):
         on_delete=models.CASCADE,
         related_name='solution',
     )
+    #group = models.ForeignKey("groups.StudyGroup")
     STATUS_CHOICES = [
         ('has_not_started', _('Has Not Started')),
         ('in_progress', _('In Progress')),

@@ -1,4 +1,6 @@
-<form class="flex flex-col flex-grow h-full">
+{% load group_filters %}
+
+<form class="flex flex-col flex-grow h-full" method="post">
     {% csrf_token %}
     <div class="grid grid-cols-2 gap-4 flex-grow grid-rows-[auto_1fr_auto] min-h-0 overflow-auto px-4 pt-4 pb-0">
         
@@ -6,7 +8,8 @@
         <div class="">
             <label class="input w-full">
                 <span class="label">Name</span>
-                <input type="text" value="{{ group.group_name }}" placeholder="Group Name" />
+                <!--<input name="group_name" type="text" value="{{ group.group_name }}" placeholder="Group Name" />-->
+                {{ group_settings_form.group_name }}
             </label>
         </div>
 
@@ -14,16 +17,7 @@
         <div class="">
             <label class="select w-full">
                 <span class="label">Privacy</span>
-                <select>
-                    {% for value, label in group.PRIVACY_CHOICES %}
-                        <option value="{{ value }}"
-                            {% if group.privacy == value %}
-                                selected
-                            {% endif %}>
-                        {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
+                {{ group_settings_form.privacy }}
             </label>
         </div>
 
@@ -40,16 +34,7 @@
                         <tr>
                             <td>{{ membership.user.username }}</td>
                             <td>
-                                <select>
-                                    {% for value, label in membership.ROLES %}
-                                        <option value="{{ value }}"
-                                            {% if membership.role == value %}
-                                                selected
-                                            {% endif %}>
-                                        {{ label }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+                                {{ group_settings_form|get_membership_field:membership.id }}
                             </td>
                             <td><button 
                                 onclick="" 

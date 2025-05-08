@@ -41,7 +41,7 @@ class StudyGroup(models.Model):
         editable=False
     )
     group_name = models.CharField(
-        max_length=254,
+        max_length=100,
         unique=False, 
         blank=False, 
         null=False, 
@@ -81,8 +81,6 @@ class StudyGroup(models.Model):
             )
             solutions.append((member, solution))
         return solutions
-
-    
     
     @classmethod
     def create_unique_invite_code(cls):

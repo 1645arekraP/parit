@@ -71,3 +71,36 @@ class CreateGroupForm(forms.Form):
         )
         print(f"DEBUG: Group created with ID: {group.id} and Name: {group.group_name}")
         return group
+    
+class GroupEditForm(forms.Form):
+    group_name = forms.CharField(
+        max_length=100,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Group Name',
+            'type': 'input',
+        })
+    )
+
+    privacy = forms.ChoiceField(
+        widget=forms.Select()
+    )
+
+    def __init__(self, *args, **kwargs):
+        group = kwargs.pop('group', None)
+        memberships = kwargs.pop('memberships', None)
+        super(GroupEditForm, self).__init__(*args, **kwargs)
+
+        if group:
+            self.fields['privacy'].choices = group.PRIVACY_CHOICES
+            self.fields['privacy'].initial = group.privacy
+            self.fields['group_name'].initial = group.group_name
+
+            if memberships:
+                for i, membership in enumerate(memberships):
+                    field_name = f'membership_{membership.id}_role'
+                    self.fields[field_name] = forms.ChoiceField(
+                        choices=membership.ROLES,
+                        initial=membership.role,
+                        widget=forms.Select()
+                    )
